@@ -8,7 +8,7 @@
                 <div class="box-title text-center">
                     <h4 class="title">My Account</h4>
                     <div class="breadcrumb-list">
-                        <a class="breadcrumb-item" href="index.php">Home</a>
+                        <a class="breadcrumb-item" href="{{ route('home') }}">Home</a>
                         <div class="breadcrumb-item dot"><span></span></div>
                         <div class="breadcrumb-item current">My Account</div>
                     </div>
@@ -53,7 +53,7 @@
                                     Details</a>
                             </li>
                             <li>
-                                <a href="index.php" class="text-sm link fw-medium my-account-nav-item">Log Out</a>
+                                <a href="{{ route('logout') }}" class="text-sm link fw-medium my-account-nav-item">Log Out</a>
                             </li>
                         </ul>
                     </div>
@@ -63,7 +63,7 @@
                             <p class="hello-name display-sm fw-medium">
                                 Hello, Welcome to Zilly!
                                 <span>(not you?</span>
-                                <a href="index.php" class="text-decoration-underline link">Log Out</a>
+                                <a href="{{ route('logout') }}" class="text-decoration-underline link">Log Out</a>
                                 <span>)</span>
                             </p>
 
@@ -187,37 +187,6 @@
 
     </div>
 
-    <!-- /register -->
-
-    <!-- Reset pass -->
-    <div class="offcanvas offcanvas-end popup-style-1 popup-reset-pass" id="resetPass">
-        <div class="canvas-wrapper">
-            <div class="canvas-header popup-header">
-                <span class="title">Reset Your Password</span>
-                <button class="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="canvas-body popup-inner">
-                <form action="#" class="form-login">
-                    <div class="">
-                        <p class="text text-sm text-main-2">Forgot your password? No worries! Enter your registered
-                            email to receive a link and securely reset it in just a few steps.</p>
-                        <fieldset class="email mb_12">
-                            <input type="email" placeholder="Enter Your Email*" required>
-                        </fieldset>
-                    </div>
-                    <div class="bot">
-                        <div class="button-wrap">
-                            <button class="subscribe-button tf-btn animate-btn bg-dark-2 w-100" type="submit">Reset
-                                Password</button>
-                            <button type="button" data-bs-dismiss="offcanvas"
-                                class="tf-btn btn-out-line-dark2 w-100">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /Reset pass -->
 
 
 

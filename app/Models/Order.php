@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -20,17 +21,18 @@ class Order extends Model
         'city',
         'state',
         'zipcode',
-        'shipping_method_id',
         'subtotal',
         'discount',
         'shipping',
         'tax',
         'total',
         'payment_method',
-        'status'
+        'status',
+        'return_remark',
+        'coupon_id',
     ];
 
-    public function items()
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
@@ -39,17 +41,13 @@ class Order extends Model
     {
         return $this->belongsTo(ShippingMethod::class);
     }
-    public function orderItems()
+    public function coupon()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsTo(Coupon::class);
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
     }
 }

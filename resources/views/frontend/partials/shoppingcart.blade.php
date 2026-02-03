@@ -21,11 +21,11 @@
             @forelse ($cartItems as $item)
                 <div class="tf-mini-cart-item" data-id="{{ $item->id }}">
 
-                    <div class="tf-mini-cart-image">
-                        <img
-                            src="{{ $item->productImage?->image
-                                ? asset('storage/' . $item->productImage->image)
-                                : asset('asset/images/no-image.png') }}">
+                    <div class="tf-mini-cart-image"> 
+                    <img
+                        src="{{ $item->product->images->find($item->product_image_id) ? asset('storage/' . $item->product->images->find($item->product_image_id)->image) : asset('asset/images/no-image.png') }}"
+                        alt="{{ $item->product->name }}">
+
                     </div>
 
                     <div class="tf-mini-cart-info">
@@ -34,19 +34,6 @@
                             <span class="title fw-medium">{{ $item->name }}</span>
                             <i class="icon icon-close remove" data-id="{{ $item->id }}"></i>
                         </div>
-                        {{-- <div class="info-variant">
-                            <select class="text-xs">
-                                @foreach ($product->colors as $color)
-                                    @foreach ($product->size as $size)
-                                        <option value="{{ $color }} / {{ $size }}">
-                                            {{ $color }} / {{ $size }}
-                                        </option>
-                                    @endforeach
-                                @endforeach
-                            </select>
-                            <i class="icon-pen edit"></i>
-                        </div> --}}
-
                         <p class="price-wrap text-sm">
                             ₹{{ number_format($item->price, 2) }}
                         </p>
@@ -56,8 +43,8 @@
                             <div class="wg-quantity small">
                                 <button class="btn-quantity minus-btn" data-id="{{ $item->id }}">-</button>
 
-                                <input class="quantity-product" id="qty-{{ $item->id }}" value="{{ $item->qty }}"
-                                    readonly>
+                                <input class="quantity-product" id="qty-{{ $item->id }}"
+                                    value="{{ $item->qty }}" readonly>
 
                                 <button class="btn-quantity plus-btn" data-id="{{ $item->id }}">+</button>
                             </div>
@@ -89,7 +76,7 @@
                         <div class="total-discount text-xl fw-medium d-flex justify-content-between">
                             <span>Total:</span>
                             <span class="cart-total">
-                                ${{ number_format($cartTotal, 2) }} USD
+                                ₹ {{ number_format($cartTotal, 2) }} Rs
                             </span>
                         </div>
                         <p class="text-sm mt-1">
@@ -116,13 +103,6 @@
 </div>
 
 <script>
-    $(document).on('click', '.plus-btn', function() {
-        updateQty($(this).data('id'), 'plus');
-    });
-
-    $(document).on('click', '.minus-btn', function() {
-        updateQty($(this).data('id'), 'minus');
-    });
 
     function updateQty(itemId, type) {
         $.ajax({

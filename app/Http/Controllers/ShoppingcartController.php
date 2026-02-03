@@ -19,99 +19,50 @@ class ShoppingcartController extends Controller
     }
 
 
-    // public function add(Request $request)
-    // {
-    //     $request->validate([
-    //         'product_id' => 'required|exists:products,id',
-    //     ]);
-
-    //     // 1️⃣ Get product being added
-    //     $product = Product::with('category')->findOrFail($request->product_id);
-
-    //     // 2️⃣ Add to cart
-    //     $cart = Cart::where('product_id', $product->id)
-    //         ->where('user_id', auth()->id())
-    //         ->first();
-
-    //     if ($cart) {
-    //         $cart->increment('qty');
-    //     } else {
-    //         Cart::create([
-    //             'user_id' => auth()->id(),
-    //             'product_id' => $product->id,
-    //             'name' => $product->name,
-    //             'qty' => 1,
-    //             'price' => $product->price,
-    //             'original_price' => $product->original_price,
-    //             'discount_percent' => $product->discount_percent,
-    //         ]);
-    //     }
-
-    //     // 3️⃣ Cart items
-    //     $cartItems = Cart::with('productImage')
-    //         ->where('user_id', auth()->id())
-    //         ->latest()
-    //         ->get();
-
-    //     // 4️⃣ ✅ RECOMMENDATION LOGIC (FIXED)
-    //     $relatedProducts = Product::where('category_id', $product->category_id)
-    //         ->where('id', '!=', $product->id)
-    //         ->limit(2)
-    //         ->get();
-
-    //     // 5️⃣ Render same blade
-    //     $html = view('frontend.partials.mini-cart-items', compact(
-    //         'cartItems',
-    //         'relatedProducts'
-    //     ))->render();
-
-    //     return response()->json([
-    //         'count' => $cartItems->sum('qty'),
-    //         'html'  => $html,
-    //     ]);
-    // }
     public function add(Request $request)
     {
         $request->validate([
-            'product_id'  => 'required|exists:products,id',
-            'color'       => 'nullable|string',      // selected color
-            'color_size'  => 'nullable|string',      // selected color+size variant
-            'qty'         => 'nullable|integer|min:1',
+            'product_id' => 'required|exists:products,id',
+            'image_id'   => 'nullable|integer|exists:product_images,id',
+            'qty'        => 'nullable|integer|min:1',
         ]);
+        if (!Auth::check()) {
+            return response()->json([
+                'status' => 'login_required',
+                'message' => 'Please login first',
+            ], 401);
+        }
+        // 1️⃣ Get the product
+        $product = Product::with('category', 'images')->findOrFail($request->product_id);
+        $quantity = $request->qty ?? 1;
 
-        // 1️⃣ Get product being added
-        $product = Product::with('category')->findOrFail($request->product_id);
+        $imageId = $request->image_id ?? $product->images->first()->id;
 
-        // 2️⃣ Check if this exact variant already exists in cart
-        $cart = Cart::where('product_id', $product->id)
-            ->where('user_id', auth()->id())
-            ->where('color_size', $request->color_size ?? null) // same variant
+        $cart = Cart::where('user_id', auth()->id())
+            ->where('product_id', $product->id)
+            ->where('product_image_id', $imageId)
             ->first();
 
-        $quantity = $request->qty ?? 1;
 
         if ($cart) {
             // Increment quantity
             $cart->increment('qty', $quantity);
         } else {
-            // Create new cart row with variant info
+            // Create new cart row
             Cart::create([
                 'user_id'          => auth()->id(),
                 'product_id'       => $product->id,
+                'product_image_id' => $imageId,
                 'name'             => $product->name,
                 'qty'              => $quantity,
                 'price'            => $product->price,
                 'original_price'   => $product->original_price,
                 'discount_percent' => $product->discount_percent,
-                'color_size' => [
-                    'color' => $request->selected_color,
-                    'size'  => $request->selected_size,
-                ], // store selected variant
             ]);
         }
 
         // 3️⃣ Get updated cart items
-        $cartItems = Cart::with('productImage')
+        $cartItems = Cart::with('product', 'productImage')
             ->where('user_id', auth()->id())
             ->latest()
             ->get();
@@ -129,7 +80,7 @@ class ShoppingcartController extends Controller
         ))->render();
 
         return response()->json([
-            'count' => $cartItems->sum('qty'),
+            'count' => $cartItems->count(),
             'html'  => $html,
         ]);
     }

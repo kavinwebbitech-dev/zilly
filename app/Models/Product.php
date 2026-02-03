@@ -15,6 +15,7 @@ class Product extends Model
         'discount_percent',
         'short_description',
         'status',
+        'today_pick',
         'colors',
         'sizes',
         'color_size',
@@ -37,4 +38,15 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class, 'brand_id');
     }
+    public function productImage()
+    {
+        return $this->hasOne(ProductImage::class)->oldestOfMany();
+    }
+   public function order()
+{
+    return $this->hasOne(Order::class, 'product_id', 'id'); 
+    // hasOne(RelatedModel, foreign_key_on_related, local_key)
+}
+        // Or hasMany if a product can have multiple orders
+    
 }

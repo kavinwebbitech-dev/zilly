@@ -1,5 +1,17 @@
 @extends('frontend.layouts.app')
 @section('content')
+    <section class="tf-page-title">
+        <div class="container">
+            <div class="box-title text-center">
+                <h4 class="title">About Us</h4>
+                <div class="breadcrumb-list">
+                    <a class="breadcrumb-item" href="{{ route('home') }}">Home</a>
+                    <div class="breadcrumb-item dot"><span></span></div>
+                    <div class="breadcrumb-item current">About Us</div>
+                </div>
+            </div>
+        </div>
+    </section>
     <div class="main-content">
         <section class="flat-spacing-3 pb-0">
             <div class="container">
@@ -27,8 +39,9 @@
                 </div>
 
                 <div class="image radius-16 overflow-hidden banner-about">
-                    <img src="{{asset('asset/images/section/aboutnew.jpg')}}" data-src="{{asset('asset/images/section/aboutnew.jpg')}}"
-                        alt="Zilly Designer Vegan Handbags" class="w-100 h-100 object-fit-cover lazyload">
+                    <img src="{{ asset('asset/images/cls-categories/grid-cls/two.png') }}"
+                        data-src="{{ asset('asset/images/cls-categories/grid-cls/two.png') }}" alt="Zilly Designer Vegan Handbags"
+                        class="w-100 h-100 object-fit-cover lazyload">
                 </div>
             </div>
         </section>
@@ -88,7 +101,8 @@
 
                     <div class="col-xl-5 col-md-6">
                         <div class="image radius-16 overflow-hidden w-100 h-100">
-                            <img src="{{asset('asset/images/section/aboutnew1.jpg')}}" data-src="{{asset('asset/images/section/aboutnew1.jpg')}}"
+                            <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/10.png') }}"
+                                data-src="{{ asset('asset/images/cls-categories/grid-cls/zilly/10.png') }}"
                                 alt="Zilly Vegan Handcrafted Bags" class="lazyload w-100 h-100 object-fit-cover">
                         </div>
                     </div>
@@ -263,7 +277,7 @@
 
                     <div class="box-author">
                         <div class="avt">
-                            <img src="{{asset('asset/images/testimonial/tes-about.jpg')}}" alt="Zilly Customer Review">
+                            <img src="{{ asset('asset/images/testimonial/tes-about.jpg') }}" alt="Zilly Customer Review">
                         </div>
                         <p class="text-md lh-xl-26 fw-medium">
                             Zilly Customer
@@ -273,53 +287,6 @@
             </div>
         </section>
 
-        
+
     </div>
-
-
-    <!-- mobile menu -->
-    @include('frontend.partials.mobilemenu')
-    <!-- /mobile menu -->
-
-    <!-- toolbar -->
-    @include('frontend.partials.toolbar')
-    <!-- /toolbar  -->
-
-    <!-- login -->
-    @include('frontend.partials.login')
-    <!-- /login -->
-
-    <!-- register -->
-    @include('frontend.partials.register')
-    <!-- /register -->
-
-    <!-- Reset pass -->
-    <div class="offcanvas offcanvas-end popup-style-1 popup-reset-pass" id="resetPass">
-        <div class="canvas-wrapper">
-            <div class="canvas-header popup-header">
-                <span class="title">Reset Your Password</span>
-                <button class="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="canvas-body popup-inner">
-                <form action="#" class="form-login">
-                    <div class="">
-                        <p class="text text-sm text-main-2">Forgot your password? No worries! Enter your registered
-                            email to receive a link and securely reset it in just a few steps.</p>
-                        <fieldset class="email mb_12">
-                            <input type="email" placeholder="Enter Your Email*" required>
-                        </fieldset>
-                    </div>
-                    <div class="bot">
-                        <div class="button-wrap">
-                            <button class="subscribe-button tf-btn animate-btn bg-dark-2 w-100" type="submit">Reset
-                                Password</button>
-                            <button type="button" data-bs-dismiss="offcanvas"
-                                class="tf-btn btn-out-line-dark2 w-100">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /Reset pass -->
 @endsection

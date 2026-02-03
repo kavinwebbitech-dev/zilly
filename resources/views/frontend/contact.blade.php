@@ -1,5 +1,36 @@
 @extends('frontend.layouts.app')
 @section('content')
+<style>
+    .border-box {
+    border: 1px solid #ddd;         /* Light gray border */
+    padding: 30px;                  /* Space inside */
+    border-radius: 12px;            /* Rounded corners */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Subtle shadow */
+    background-color: #fff;         /* White background */
+    text-align: center;             /* Center all text */
+}
+
+.border-box .contact-list li {
+    line-height: 1.6;
+}
+
+.border-box .tf-social-icon li a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    transition: 0.3s;
+}
+
+.border-box .tf-social-icon li a:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+    </style>
     <div id="wrapper">
         <!-- Title Page -->
         <section class="tf-page-title">
@@ -25,66 +56,48 @@
                         class="map" style="border:none;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
-                <div class="row">
+                <div class="row d-flex justify-content-center align-items-center">
                     <div class="col-lg-6">
-                        <div class="content-left">
-                            <div class="title fw-medium display-md-2">
+                        <div class="content-left border-box text-center p-4 rounded shadow-sm">
+                            <div class="title fw-medium display-md-2 mb-3">
                                 Contact Us
                             </div>
-                            <p class="sub-title text-main">
+                            <p class="sub-title text-main mb-4">
                                 Have a question? Please contact us using the customer support <br> channels below.
                             </p>
-                            <ul class="contact-list">
-                                <li>
-                                    <p>
-                                        Address:
-                                        <a class="link"
-                                            href="https://www.google.com/maps?q=15Yarranst,Punchbowl,NSW,Australia"
-                                            target="_blank">
-                                            15 Yarran st, Punchbowl, NSW, Australia
-                                        </a>
-                                    </p>
+                            <ul class="contact-list list-unstyled mb-4">
+                                <li class="mb-2">
+                                    <strong>Address:</strong><br>
+                                    <a class="link"
+                                        href="https://www.google.com/maps?q=15Yarranst,Punchbowl,NSW,Australia"
+                                        target="_blank">
+                                        15 Yarran st, Punchbowl, NSW, Australia
+                                    </a>
                                 </li>
-                                <li>
-                                    <p>
-                                        Phone number:
-                                        <a class="link" href="tel:123456">
-                                            +1 234 567
-                                        </a>
-                                    </p>
+                                <li class="mb-2">
+                                    <strong>Phone number:</strong><br>
+                                    <a class="link" href="tel:123456">+1 86678 73341</a>
                                 </li>
-                                <li>
-                                    <p>
-                                        Email:
-                                        <a class="link" href="mailto:contact@vineta.com">
-                                            contact@vineta.com
-                                        </a>
-                                    </p>
+                                <li class="mb-2">
+                                    <strong>Email:</strong><br>
+                                    <a class="link" href="mailto:contact@vineta.com">contact@vineta.com</a>
                                 </li>
-                                <li>
-                                    <p>
-                                        Open:
-                                        <span class="text-main">
-                                            8am - 7pm, Mon - Sat
-                                        </span>
-                                    </p>
+                                <li class="mb-2">
+                                    <strong>Open:</strong><br>
+                                    <span class="text-main">8am - 7pm, Mon - Sat</span>
                                 </li>
                             </ul>
-                            <ul class="tf-social-icon style-large ">
+                            <ul class="tf-social-icon style-large d-flex justify-content-center gap-3">
                                 <li>
-                                    <a href="https://www.facebook.com/" class="social-item social-facebook">
-                                        <i class="icon icon-fb"></i>
-                                    </a>
+                                    <a href="https://www.facebook.com/" class="social-item social-facebook"><i
+                                            class="icon icon-fb"></i></a>
                                 </li>
                                 <li>
-                                    <a href="https://www.instagram.com/" class="social-item social-instagram">
-                                        <i class="icon icon-instagram"></i>
-                                    </a>
+                                    <a href="https://www.instagram.com/" class="social-item social-instagram"><i
+                                            class="icon icon-instagram"></i></a>
                                 </li>
                                 <li>
-                                    <a href="https://x.com/" class="social-item social-x">
-                                        <i class="icon icon-x"></i>
-                                    </a>
+                                    <a href="https://x.com/" class="social-item social-x"><i class="icon icon-x"></i></a>
                                 </li>
                                 <li>
                                     <a href="https://www.snapchat.com/" class="social-item social-snapchat"><i
@@ -93,48 +106,8 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="content-right">
-                            <div class="title fw-medium display-md-2">
-                                Get In Touch
-                            </div>
-                            <p class="sub-title text-main">
-                                Please submit all general enquiries in the contact form below and we look forward to
-                                hearing from you soon.
-                            </p>
-                            <div class="form-contact-wrap">
-                                <form method="post" class="form-default" id="contactform"
-                                    action="https://themesflat.co/html/vineta/contact/contact-process.php">
-                                    <div class="wrap">
-                                        <div class="cols">
-                                            <fieldset>
-                                                <label for="name">Your name*</label>
-                                                <input name="name" id="name" class="radius-8" type="text"
-                                                    required>
-                                            </fieldset>
-                                            <fieldset>
-                                                <label for="email">Your email*</label>
-                                                <input name="email" id="email" class="radius-8" type="email"
-                                                    required>
-                                            </fieldset>
-                                        </div>
-                                        <div class="cols">
-                                            <fieldset class="textarea">
-                                                <label for="message">Message*</label>
-                                                <textarea name="message" id="message" required class="radius-8"></textarea>
-                                            </fieldset>
-                                        </div>
-                                        <div class="button-submit send-wrap">
-                                            <button class="tf-btn animate-btn" type="submit">
-                                                Send
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+
             </div>
         </section>
         <!-- /Contact -->
@@ -168,8 +141,8 @@
                         </div>
                         <div class="demo-item">
                             <a href="home-fashion-02.html" class="demo-image">
-                                <img class="lazyload" data-src="images/demo/fashion-2.jpg"
-                                    src="images/demo/fashion-2.jpg" alt="home-fashion">
+                                <img class="lazyload" data-src="images/demo/fashion-2.jpg" src="images/demo/fashion-2.jpg"
+                                    alt="home-fashion">
                             </a>
                             <a href="home-fashion-02.html" class="demo-name link">Fashion Style
                                 2</a>
@@ -392,36 +365,8 @@
             </div>
         </div>
     </div>
-    <!-- Reset pass -->
-    <div class="offcanvas offcanvas-end popup-style-1 popup-reset-pass" id="resetPass">
-        <div class="canvas-wrapper">
-            <div class="canvas-header popup-header">
-                <span class="title">Reset Your Password</span>
-                <button class="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="canvas-body popup-inner">
-                <form action="#" class="form-login">
-                    <div class="">
-                        <p class="text text-sm text-main-2">Forgot your password? No worries! Enter your registered
-                            email to receive a link and securely reset it in just a few steps.</p>
-                        <fieldset class="email mb_12">
-                            <input type="email" placeholder="Enter Your Email*" required>
-                        </fieldset>
-                    </div>
-                    <div class="bot">
-                        <div class="button-wrap">
-                            <button class="subscribe-button tf-btn animate-btn bg-dark-2 w-100" type="submit">Reset
-                                Password</button>
-                            <button type="button" data-bs-dismiss="offcanvas"
-                                class="tf-btn btn-out-line-dark2 w-100">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+ 
 
-  
     <!-- Javascript -->
     <script src="{{ asset('asset/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('asset/js/jquery.min.js') }}"></script>

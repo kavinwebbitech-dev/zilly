@@ -20731,10 +20731,10 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
   .tf-product-info-wrap {
     gap: 42px;
   }
-  .tf-product-info-wrap:not(.style-2) .tf-product-heading {
+  /* .tf-product-info-wrap:not(.style-2) .tf-product-heading {
     padding-bottom: 32px;
     margin-bottom: 8px;
-  }
+  } */
   .tf-product-info-wrap .product-info-countdown,
   .tf-product-info-wrap .product-progress-sale {
     margin-top: 12px;
@@ -23822,7 +23822,7 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
     position: relative;
     padding: 120px 0;
     margin-bottom: 100px;
-    background-image: url("../images/gallery/bags/bag1.jpg ");
+    background-image: url("../images/cls-categories/grid-cls/zilly/7.png ");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

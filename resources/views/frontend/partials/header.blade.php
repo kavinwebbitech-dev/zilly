@@ -1,3 +1,31 @@
+<style>
+    .whatsapp-fixed {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+
+    .whatsapp-circle {
+        width: 55px;
+        height: 55px;
+        background: #25D366;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        text-decoration: none;
+    }
+
+    .whatsapp-circle:hover {
+        background: #20b954;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <header id="header" class="header-default">
     <div class="container">
         <div class="row wrapper-header align-items-center">
@@ -35,7 +63,8 @@
             <div class="col-xl-2 col-md-4 col-3">
                 <ul class="nav-icon d-flex justify-content-end align-items-center">
                     <li class="nav-search">
-                        <a href="#search" data-bs-toggle="modal" class="nav-icon-item">
+                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#search"
+                            class="nav-icon-item">
                             <i class="icon icon-search"></i>
                         </a>
                     </li>
@@ -63,19 +92,26 @@
         </div>
     </div>
 </header>
+<div class="whatsapp-fixed">
+    <a href="https://wa.me/918667873341?text=I%20want%20to%20place%20an%20order" target="_blank"
+        class="whatsapp-circle">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</div>
+{{-- <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script> --}}
 {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
-<div class="offcanvas offcanvas-end popup-style-1 popup-shopping-cart" id="miniCartItems" tabindex="-1"
+<div class="offcanvas offcanvas-end popup-style-1 popup-shopping-cart " id="miniCartItems" tabindex="-1"
     aria-labelledby="shoppingCartLabel">
     @include('frontend.partials.mini-cart-items')
 </div>
 <script src="{{ asset('asset/js/jquery.min.js') }}"></script>
-{{-- <script>
+<script>
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     });
-</script> --}}
+</script>
 <script>
     $(document).on('click', '.add-to-cart', function(e) {
         e.preventDefault();
@@ -98,7 +134,9 @@
     });
 
 
-    $(document).on('click', '.remove', function() {
+    $(document).on('click', '.remove', function(e) {
+        e.preventDefault(); // ✅ stop GET request
+        e.stopPropagation();
 
         let itemId = $(this).data('id');
 
@@ -106,21 +144,23 @@
             url: "{{ url('cart/remove') }}/" + itemId,
             type: "POST",
             data: {
-                _token: "{{ csrf_token() }}",
+                _token: "{{ csrf_token() }}"
             },
             success: function(response) {
 
-                // Update mini cart
+                // ✅ update mini cart HTML
                 $('#miniCartItems').html(response.html);
-                $('.cart-count').text(response.count);
 
+                // ✅ update cart count
+                $('.cart-count').text(response.count);
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
-                alert('CSRF or server error');
+                alert('Server error');
             }
         });
     });
+
 
 
     $(document).on('click', '.wishlist', function() {

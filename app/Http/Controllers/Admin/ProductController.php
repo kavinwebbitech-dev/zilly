@@ -35,9 +35,6 @@ class ProductController extends Controller
             'name'        => 'required|string|max:255',
             'price'       => 'required|numeric',
             'status'      => 'nullable|boolean',
-            'color_size'               => 'required|array|min:1',
-            'color_size.*.color'       => 'required|string',
-            'color_size.*.size'        => 'required|string',
             'product_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -51,12 +48,8 @@ class ProductController extends Controller
             'original_price'    => $request->original_price,
             'discount_percent'  => $request->discount_percent,
             'short_description' => $request->short_description,
-            'status'            => $request->status ?? 1,
-
-            // 🔥 derived values
-            'colors'     => collect($colorSize)->pluck('color')->unique()->values()->all(),
-            'sizes'      => collect($colorSize)->pluck('size')->unique()->values()->all(),
-            'color_size' => $colorSize,
+            'status'     => $request->has('status') ? 1 : 0,
+            'today_pick' => $request->has('today_pick') ? 1 : 0,
         ]);
 
         if ($request->hasFile('product_images')) {
@@ -82,9 +75,6 @@ class ProductController extends Controller
             'name'        => 'required|string|max:255',
             'price'       => 'required|numeric',
             'status'      => 'nullable|boolean',
-            'color_size'               => 'required|array|min:1',
-            'color_size.*.color'       => 'required|string',
-            'color_size.*.size'        => 'required|string',
             'product_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
@@ -98,10 +88,8 @@ class ProductController extends Controller
             'original_price'    => $request->original_price,
             'discount_percent'  => $request->discount_percent,
             'short_description' => $request->short_description,
-            'status'            => $request->status ?? 1,
-            'colors'     => collect($colorSize)->pluck('color')->unique()->values()->all(),
-            'sizes'      => collect($colorSize)->pluck('size')->unique()->values()->all(),
-            'color_size' => $colorSize,
+            'status'     => $request->has('status') ? 1 : 0,
+            'today_pick' => $request->has('today_pick') ? 1 : 0,
         ]);
 
         if ($request->hasFile('product_images')) {
@@ -138,13 +126,12 @@ class ProductController extends Controller
     {
         $image = ProductImage::findOrFail($id);
 
-        if (Storage::disk('public')->exists($image->image)) {
-            Storage::disk('public')->delete($image->image);
-        }
+        // Only soft delete (no file removal)
         $image->delete();
 
-        return back()->with('success', 'Image deleted successfully');
+        return response()->json(['success' => true]);
     }
+
     private function generateColorSize(array $colors, array $sizes)
     {
         $variants = [];

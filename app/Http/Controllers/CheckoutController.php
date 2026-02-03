@@ -6,182 +6,282 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\ShippingMethod;
 use App\Models\Coupon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderPlacedUserMail;
+use App\Mail\OrderPlacedAdminMail;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
-    // Show checkout page
-    public function index()
+    /**
+     * Calculate cart totals including coupon discount if applied.
+     */
+    private function calculateTotals($userId)
     {
-        $cartItems = Cart::with('product.images')
-            ->where('user_id', Auth::id())
-            ->get();
+        $cartItems = Cart::where('user_id', $userId)->get();
 
-        $cartSubtotal = $cartItems->sum(fn($item) => $item->price * $item->qty);
-
-        $couponDiscount = 0; 
+        $subtotal = $cartItems->sum(fn($i) => $i->price * $i->qty);
+        $discount = 0;
         $coupon = null;
 
-        if (request('coupon_code')) {
-            $coupon = Coupon::where('code', request('coupon_code'))
+        // Check if a coupon is applied in session
+        if (session()->has('coupon')) {
+            $sessionCoupon = session('coupon');
+
+            $coupon = Coupon::where('id', $sessionCoupon['id'])
                 ->where('is_active', 1)
                 ->where('user_limit', '>', 0)
                 ->where(function ($q) {
                     $q->whereNull('expires_at')
-                      ->orWhere('expires_at', '>=', now());
+                        ->orWhere('expires_at', '>=', now());
                 })
                 ->first();
 
-            if ($coupon && $cartSubtotal >= $coupon->min_amount) {
-                $couponDiscount = $coupon->type === 'fixed'
-                    ? $coupon->value
-                    : ($cartSubtotal * $coupon->value) / 100;
+            if ($coupon && $subtotal >= $coupon->min_amount) {
+                $discount = $coupon->type === 'fixed'
+                    ? min($coupon->value, $subtotal)
+                    : round($subtotal * $coupon->value / 100, 2);
             }
         }
 
-        $cartTax = round($cartSubtotal * 0.1, 2); // 10% tax
-        $shippingPrice = 0;
-        $cartTotal = $cartSubtotal - $couponDiscount + $cartTax + $shippingPrice;
+        // $tax = round($subtotal * 0.10, 2); // 10%
+        $shipping = 0;
+        $total = max(0, $subtotal - $discount + $shipping);
 
-        $states = ['Alabama', 'Alaska', 'California', 'Hawaii', 'Texas', 'Georgia'];
-
-        return view('frontend.partials.checkout', compact(
-            'cartItems',
-            'cartSubtotal',
-            'coupon',
-            'states',
-            'couponDiscount',
-            'cartTax',
-            'shippingPrice',
-            'cartTotal'
-        ));
+        return compact('cartItems', 'subtotal', 'discount', 'shipping', 'total', 'coupon');
     }
 
-   
+    /**
+     * Show checkout page
+     */
+    public function index(Request $request)
+    {
+        $data = $this->calculateTotals(Auth::id());
+
+        $states = [
+            // States (28)
+            'Andhra Pradesh',
+            'Arunachal Pradesh',
+            'Assam',
+            'Bihar',
+            'Chhattisgarh',
+            'Goa',
+            'Gujarat',
+            'Haryana',
+            'Himachal Pradesh',
+            'Jharkhand',
+            'Karnataka',
+            'Kerala',
+            'Madhya Pradesh',
+            'Maharashtra',
+            'Manipur',
+            'Meghalaya',
+            'Mizoram',
+            'Nagaland',
+            'Odisha',
+            'Punjab',
+            'Rajasthan',
+            'Sikkim',
+            'Tamil Nadu',
+            'Telangana',
+            'Tripura',
+            'Uttar Pradesh',
+            'Uttarakhand',
+            'West Bengal',
+
+            // Union Territories (8)
+            'Andaman and Nicobar Islands',
+            'Chandigarh',
+            'Dadra and Nagar Haveli and Daman and Diu',
+            'Delhi',
+            'Jammu and Kashmir',
+            'Ladakh',
+            'Lakshadweep',
+            'Puducherry',
+        ];
+
+        return view('frontend.partials.checkout', [
+            'cartItems' => $data['cartItems'],
+            'cartSubtotal' => $data['subtotal'],
+            'couponDiscount' => $data['discount'],
+            // 'cartTax' => $data['tax'],
+            'shippingPrice' => $data['shipping'],
+            'cartTotal' => $data['total'],
+            'coupon' => $data['coupon'],
+            'states' => $states,
+        ]);
+    }
+
+
     public function placeOrder(Request $request)
     {
-       
+
         $request->validate([
             'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone' => 'required|string|max:20',
-            'country' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zipcode' => 'required|string|max:20',
-            'shipping_method' => 'required|exists:shipping_methods,id',
+            'lastname'  => 'required|string|max:255',
+            'email'     => 'required|email',
+            'phone'     => 'required|string|max:20',
+            'country'   => 'required|string|max:255',
+            'address'   => 'required|string|max:255',
+            'city'      => 'required|string|max:255',
+            'state'     => 'required|string|max:255',
+            'zipcode'   => 'required|string|max:20',
             'payment_method' => 'required|in:cod',
         ]);
 
-        $userId = Auth::id();
-
-        $cartItems = Cart::with('product')->where('user_id', $userId)->get();
-
-        if ($cartItems->isEmpty()) {
-            return redirect()->back()->with('error', 'Your cart is empty.');
+        if (!Auth::check()) {
+            return back()
+                ->with('show_login_popup', true)
+                ->with('error', 'Please login to place your order.');
         }
 
-        // Calculate totals
-        $subtotal = $cartItems->sum(fn($item) => $item->qty * $item->price);
-        $discount = $request->coupon_id ? Coupon::find($request->coupon_id)->value : 0;
-        $tax = round($subtotal * 0.1, 2);
-        $shippingPrice = ShippingMethod::find($request->shipping_method)->price ?? 0;
-        $total = $subtotal - $discount + $tax + $shippingPrice;
+        $userId = Auth::id();
 
-        // Create order
+        // Load cart with relations
+        $cartItems = Cart::with('product.images')->where('user_id', $userId)->get();
+
+        if ($cartItems->isEmpty()) {
+            return back()->with('error', 'Your cart is empty.');
+        }
+
+        $data = $this->calculateTotals($userId);
+
+        // DB::transaction(function () use ($request, $userId, $cartItems, $data) {
+
+        // 🟢 Create order
         $order = Order::create([
-            'user_id' => $userId,
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'country' => $request->country,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zipcode' => $request->zipcode,
-            'shipping_method_id' => $request->shipping_method,
-            'subtotal' => $subtotal,
-            'discount' => $discount,
-            'shipping' => $shippingPrice,
-            'tax' => $tax,
-            'total' => $total,
+            'user_id'        => $userId,
+            'firstname'      => $request->firstname,
+            'lastname'       => $request->lastname,
+            'email'          => $request->email,
+            'phone'          => $request->phone,
+            'country'        => $request->country,
+            'address'        => $request->address,
+            'city'           => $request->city,
+            'state'          => $request->state,
+            'zipcode'        => $request->zipcode,
+            'subtotal'       => $data['subtotal'],
+            'discount'       => $data['discount'],
+            'shipping'       => $data['shipping'],
+            'total'          => $data['total'],
+            'coupon_id'      => $data['coupon']->id ?? null,
             'payment_method' => 'cod',
-            'status' => 'pending',
+            'status'         => 'pending',
         ]);
 
-        // Create order items
+        // 🟢 Save order items
         foreach ($cartItems as $item) {
+
+            // Get image safely
+            $imageId = $item->product_image_id
+                ?? optional($item->product->images->first())->id;
+
             OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item->product_id,
-                'quantity' => $item->qty,
-                'price' => $item->price,
-                'subtotal' => $item->qty * $item->price,
+                'order_id'          => $order->id,
+                'product_id'        => $item->product_id,
+                'product_image_id'  => $imageId,
+                'quantity'          => $item->qty,
+                'price'             => $item->price,
+                'subtotal'          => $item->qty * $item->price,
             ]);
         }
 
-        // Reduce coupon user_limit if applied
-        if ($request->coupon_id) {
-            Coupon::where('id', $request->coupon_id)
-                ->where('user_limit', '>', 0)
-                ->decrement('user_limit', 1);
+        // 🟢 Reduce coupon limit ONLY after order placed
+        if (!empty($data['coupon'])) {
+            $data['coupon']->decrement('user_limit');
         }
 
-        // Clear cart
+        // 🟢 Clear cart & coupon
         Cart::where('user_id', $userId)->delete();
+        session()->forget('coupon');
 
-        return redirect()->route('thank-you')->with('success', 'Order placed successfully!');
+
+
+        try {
+            Mail::send('emails.order-placed-user', ['order' => $order], function ($message) use ($order) {
+                $message->from("kavinwebbitech@gmail.com")
+                    ->to($order->email)
+                    ->subject('Your Order Has Been Placed');
+            });
+
+            Mail::send('emails.order-placed-admin', ['order' => $order], function ($message) {
+                $message->from("kavinwebbitech@gmail.com")
+                    ->to('anandhwebbitech@gmail.com')
+                    ->subject('New Order Received');
+            });
+        } catch (\Exception $e) {
+            Log::error('Mail sending failed: ' . $e->getMessage());
+        }
+
+        return redirect()->route('thank-you')
+            ->with('success', 'Order placed successfully!');
     }
 
-    // Apply coupon via GET
+
     public function applyCoupon(Request $request)
     {
-        // dd($request->all());
-        $code = $request->coupon_code;
-         
-        if (!$code) {
-            return redirect()->back()->with('error', 'Please provide a coupon code.');
-        }
+        $request->validate([
+            'coupon_code' => 'required|string'
+        ]);
 
         $userId = Auth::id();
 
-        $coupon = Coupon::where('code', $code)
+        $coupon = Coupon::where('code', $request->coupon_code)
             ->where('is_active', 1)
             ->where('user_limit', '>', 0)
             ->where(function ($q) {
                 $q->whereNull('expires_at')
-                  ->orWhere('expires_at', '>=', now());
+                    ->orWhere('expires_at', '>=', now());
             })
             ->first();
 
         if (!$coupon) {
-            return redirect()->back()->with('error', 'Invalid or expired coupon.');
+            return response()->json([
+                'error' => 'Invalid or expired coupon.'
+            ]);
         }
 
         $cartItems = Cart::where('user_id', $userId)->get();
         if ($cartItems->isEmpty()) {
-            return redirect()->back()->with('error', 'Your cart is empty.');
+            return response()->json([
+                'error' => 'Your cart is empty.'
+            ]);
         }
 
-        $cartSubtotal = $cartItems->sum(fn($item) => $item->price * $item->qty);
+        // ✅ Store coupon in session (no user_limit reduction here)
+        session([
+            'coupon' => [
+                'id' => $coupon->id,
+                'code' => $coupon->code,
+                'type' => $coupon->type,
+                'value' => $coupon->value,
+            ]
+        ]);
 
-        // Calculate discount
-        $discount = $coupon->type === 'fixed'
-            ? min($coupon->value, $cartSubtotal)
-            : round($cartSubtotal * $coupon->value / 100, 2);
+        // Optional: calculate totals with coupon applied
+        $subtotal = $cartItems->sum(fn($i) => $i->price * $i->qty);
+        $discount = 0;
 
-        // Reduce user_limit
-        $coupon->decrement('user_limit');
+        if ($coupon->type === 'fixed') {
+            $discount = min($coupon->value, $subtotal);
+        } elseif ($coupon->type === 'percent') {
+            $discount = $subtotal * ($coupon->value / 100);
+        }
 
-        return redirect()->back()->with([
-            'success' => "Coupon applied successfully! You saved ₹{$discount}.",
-            'coupon' => $coupon,
-            'couponDiscount' => $discount
+        $shipping = 0; // or calculate shipping
+        $tax = 0;      // or calculate tax
+        $total = $subtotal - $discount + $shipping + $tax;
+
+        return response()->json([
+            'success' => "Coupon {$coupon->code} applied successfully!",
+            'cartSubtotal' => $subtotal,
+            'couponDiscount' => $discount,
+            'shippingPrice' => $shipping,
+            'cartTax' => $tax,
+            'cartTotal' => $total
         ]);
     }
 }

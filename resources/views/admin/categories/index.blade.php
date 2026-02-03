@@ -16,7 +16,7 @@
         <table class="table table-bordered table-striped align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>#</th>
+                    <th>S.No</th>
                     <th>Name</th>
                     <th>Slug</th>
                     <th>Status</th>

@@ -1,27 +1,81 @@
 @extends('frontend.layouts.app')
-
 @section('content')
+    <style>
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* two equal columns */
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .media-box {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        /* Image container */
+        .media-box .image {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Image */
+        .media-img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* CONTENT OVER IMAGE */
+        .media-box .content {
+            position: absolute;
+            inset: 0;
+            /* top:0 right:0 bottom:0 left:0 */
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        /* Allow button clicks */
+        .media-box .box-btn {
+            pointer-events: auto;
+        }
+
+        /* Optional: dark overlay for better text visibility */
+        .media-box::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            z-index: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+                /* stack on mobile */
+            }
+        }
+    </style>
     <div class="flat-spacing-34 line-top">
-
-        <!-- RTL -->
-        <a href="javascript:void(0);" id="toggle-rtl" class="tf-btn animate-btn"><span>RTL</span></a>
-        <!-- /RTL  -->
-
-        <!-- Scroll Top -->
-        <button id="goTop">
-            <span class="border-progress"></span>
-            <span class="icon icon-arrow-right"></span>
-        </button>
-
         <!-- Grid Collection -->
         <div class="flat-spacing-34 line-top">
             <div class="container-full">
-                <div class="grid-cls grid-cls-v6 wow fadeInUp">
-                    <div class="item1 s-cls radius-20 style-absolute abs-top-center hover-img">
+                <div class="split-layout wow fadeInUp">
+                    <!-- Left Column -->
+                    <div class="item1 s-cls radius-20 hover-img media-box">
                         <div class="image img-style h-100">
-                            <img src="{{ asset('asset/images/cls-categories/grid-cls/banner1.webp') }}"
-                                data-src="{{ asset('asset/images/cls-categories/grid-cls/banner1.webp') }}" alt="banner"
-                                class="lazyload">
+                            <img src="{{ asset('asset/images/cls-categories/grid-cls/Tote.png') }}"
+                                data-src="{{ asset('asset/images/cls-categories/grid-cls/Tote.png') }}" alt="banner"
+                                class="lazyload media-img">
                         </div>
                         <div class="content">
                             <div class="box-title">
@@ -37,72 +91,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="item2 s-cls radius-20 style-absolute abs-top-center hover-img">
-                        <div class="image img-style">
-                            <img src="{{ asset('asset/images/cls-categories/grid-cls/banner3.webp') }}"
-                                data-src="{{ asset('asset/images/cls-categories/grid-cls/banner3.webp') }}" alt="banner"
-                                class="lazyload">
+
+                    <!-- Right Column -->
+                    <div class="item1 s-cls radius-20 hover-img media-box">
+                        <div class="image img-style h-100">
+                            <img src="{{ asset('asset/images/cls-categories/grid-cls/golden.png') }}"
+                                data-src="{{ asset('asset/images/cls-categories/grid-cls/golden.png') }}" alt="banner"
+                                class="lazyload media-img">
                         </div>
                         <div class="content">
                             <div class="box-title">
                                 <div class="text-white display-lg">
-                                    Handbags
+                                    New Arrivals
                                 </div>
                             </div>
                             <div class="box-btn">
-                                {{-- <a href="#"    --}}
-                                <a href="{{ route('product') }}"
-                                    class="d-flex align-items-center text-white text-md fw-medium gap-10 link">
-                                    <span class="text-transform-none">
-                                        Explore Now
-                                    </span>
-                                    <i class="icon-arrow-top-left fs-8"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item3 s-cls radius-20 style-absolute abs-top-center hover-img">
-                        <div class="image img-style">
-                            <img src="{{ asset('asset/images/cls-categories/grid-cls/banner2.jpg') }}"
-                                data-src="{{ asset('asset/images/cls-categories/grid-cls/banner2.jpg') }}" alt="banner"
-                                class="lazyload">
-                        </div>
-                        <div class="content">
-                            <div class="box-title">
-                                <div class="text-white display-lg">
-                                    Backpacks
-                                </div>
-                            </div>
-                            <div class="box-btn">
-                                <a href="{{ route('product') }}"
-                                    class="d-flex align-items-center text-white text-md fw-medium gap-10 link">
-                                    <span class="text-transform-none">
-                                        Explore Now
-                                    </span>
-                                    <i class="icon-arrow-top-left fs-8"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item4 s-cls radius-20 style-absolute abs-top-center hover-img">
-                        <div class="image img-style">
-                            <img src="{{ asset('asset/images/cls-categories/grid-cls/banner4.jpg') }}"
-                                data-src="{{ asset('asset/images/cls-categories/grid-cls/banner4.jpg') }}" alt="banner"
-                                class="lazyload">
-                        </div>
-                        <div class="content">
-                            <div class="box-title">
-                                <div class="text-white display-lg">
-                                    Signature Handbags
-                                </div>
-                            </div>
-                            <div class="box-btn">
-                                <a href="{{ route('product') }}"
-                                    class="d-flex align-items-center text-white text-md fw-medium gap-10 link">
-                                    <span class="text-transform-none">
-                                        Explore Now
-                                    </span>
-                                    <i class="icon-arrow-top-left fs-8"></i>
+                                <a href="{{ route('product') }}" class="tf-btn btn-white hover-primary">
+                                    View Collection
+                                    <i class="icon icon-arrow-top-left"></i>
                                 </a>
                             </div>
                         </div>
@@ -110,6 +116,7 @@
                 </div>
             </div>
         </div>
+
         <!-- /Grid Collection -->
 
         <!-- Feature Collection -->
@@ -135,198 +142,58 @@
                         "1200": { "slidesPerView": 4, "spaceBetween": 24, "slidesPerGroup": 4}
                         }
                     }'>
-                        <div class="swiper-wrapper">
+                        @if (isset($products) && $products->count())
+                            <div class="swiper-wrapper">
+                                @foreach ($products as $product)
+                                    @php
+                                        $mainImage = $product->images->first();
+                                        $hoverImage = $product->images->get(1);
+                                    @endphp
 
-                            <!-- PRODUCT 1 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                        <a href="{{ route('product-details') }}" class="product-img">
-                                            <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product1.jpg') }}"
-                                                alt="Product 1">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product2.jpg') }}"
-                                                alt="Product 1 Hover">
-                                        </a>
-                                        <ul class="list-product-btn">
-                                            <li>
-                                                <a href="#quickAdd" data-bs-toggle="modal"
-                                                    class="hover-tooltip tooltip-left box-icon">
-                                                    <span class="icon icon-cart2"></span>
-                                                    <span class="tooltip">Quick Add</span>
+                                    <div class="swiper-slide">
+                                        <div class="card-product">
+                                            <div class="card-product-wrapper asp-ratio-1">
+
+                                                <a href="{{ route('product.details', $product->id) }}" class="product-img">
+                                                    <img class="img-product lazyload"
+                                                        src="{{ $mainImage ? asset('storage/' . $mainImage->image) : asset('asset/images/no-image.png') }}"
+                                                        alt="{{ $product->name }}">
+
+                                                    @if ($hoverImage)
+                                                        <img class="img-hover lazyload"
+                                                            src="{{ asset('storage/' . $hoverImage->image) }}"
+                                                            alt="{{ $product->name }}">
+                                                    @endif
                                                 </a>
-                                            </li>
-                                            <li class="wishlist">
-                                                <a href="javascript:void(0);" class="hover-tooltip tooltip-left box-icon">
-                                                    <span class="icon icon-heart2"></span>
-                                                    <span class="tooltip">Add to Wishlist</span>
+
+                                            </div>
+
+                                            <div class="card-product-info text-center">
+                                                <a href="{{ route('product.details', $product->id) }}"
+                                                    class="name-product fw-medium">
+                                                    {{ $product->name }}
                                                 </a>
-                                            </li>
-                                            <li>
-                                                <a href="#quickView" data-bs-toggle="modal"
-                                                    class="hover-tooltip tooltip-left box-icon quickview">
-                                                    <span class="icon icon-view"></span>
-                                                    <span class="tooltip">Quick View</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="card-product-info text-center">
-                                       <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            One</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$120.00</span>
-                                            <span class="price-old">$150.00</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- PRODUCT 2 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                                <a href="{{ route('product-details') }}" class="product-img">
-                                                <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product2.jpg') }}"
-                                                alt="Product 2">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product3.jpg') }}"
-                                                alt="Product 2 Hover">
-                                        </a>
-                                    </div>
-                                    <div class="card-product-info text-center">
-                                        <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            Two</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$125.00</span>
-                                            <span class="price-old">$155.00</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                                                <p class="price-wrap fw-medium">
+                                                    <span class="price-new text-primary">
+                                                        ₹{{ number_format($product->price, 2) }}
+                                                    </span>
 
-                            <!-- PRODUCT 3 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                        <a href="{{ route('product-details') }}" class="product-img">
-                                            <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product3.jpg') }}"
-                                                alt="Product 3">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product4.jpg') }}"
-                                                alt="Product 3 Hover">
-                                        </a>
+                                                    @if ($product->original_price)
+                                                        <span class="price-old">
+                                                            ₹{{ number_format($product->original_price, 2) }}
+                                                        </span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="card-product-info text-center">
-                                        <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            Three</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$130.00</span>
-                                            <span class="price-old">$160.00</span>
-                                        </p>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
+                        @endif
 
-                            <!-- PRODUCT 4 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                        <a href="{{ route('product-details') }}" class="product-img">
-                                            <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product4.jpg') }}"
-                                                alt="Product 4">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product5.jpg') }}"
-                                                alt="Product 4 Hover">
-                                        </a>
-                                    </div>
-                                    <div class="card-product-info text-center">
-                                        <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            Four</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$135.00</span>
-                                            <span class="price-old">$165.00</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- PRODUCT 5 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                        <a href="{{ route('product-details') }}" class="product-img">
-                                            <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product5.jpg') }}"
-                                                alt="Product 5">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product6.jpg') }}"
-                                                alt="Product 5 Hover">
-                                        </a>
-                                    </div>
-                                    <div class="card-product-info text-center">
-                                        <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            Five</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$140.00</span>
-                                            <span class="price-old">$170.00</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- PRODUCT 6 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                        <a href="{{ route('product-details') }}" class="product-img">
-                                            <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product6.jpg') }}"
-                                                alt="Product 6">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product7.jpg') }}"
-                                                alt="Product 6 Hover">
-                                        </a>
-                                    </div>
-                                    <div class="card-product-info text-center">
-                                        <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            Six</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$145.00</span>
-                                            <span class="price-old">$175.00</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- PRODUCT 7 -->
-                            <div class="swiper-slide">
-                                <div class="card-product">
-                                    <div class="card-product-wrapper asp-ratio-1">
-                                        <a href="{{ route('product-details') }}" class="product-img">
-                                            <img class="img-product lazyload"
-                                                src="{{ asset('asset/images/products/bags/product7.jpg') }}"
-                                                alt="Product 7">
-                                            <img class="img-hover lazyload"
-                                                src="{{ asset('asset/images/products/bags/product7.jpg') }}"
-                                                alt="Product 7 Hover">
-                                        </a>
-                                    </div>
-                                    <div class="card-product-info text-center">
-                                        <a href="{{ route('product-details') }}" class="name-product fw-medium">Product
-                                            Seven</a>
-                                        <p class="price-wrap fw-medium">
-                                            <span class="price-new text-primary">$150.00</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
 
                         <div class="d-flex d-xl-none sw-dot-default sw-pagination-product justify-content-center">
                         </div>
@@ -424,7 +291,8 @@
                         <!-- item 1 -->
                         <div class="swiper-slide">
                             <div class="brand-item line radius-8">
-                                <img src="{{ asset('asset/images/brand/zara.png') }}" alt="brand">
+                                <img src="{{ asset('asset\images\cls-categories\grid-cls\zilly\10.png') }}"
+                                    alt="brand">
                             </div>
                         </div>
                         <!-- item 2 -->
@@ -503,13 +371,14 @@
                             <!-- item 1 -->
                             <div class="swiper-slide">
                                 <div class="wg-cls style-abs asp-1 hover-img">
-                                    <a href="product.php" class="image img-style d-block">
-                                        <img src="{{ asset('asset/images/products/bags/newproduct1.jpg') }}"
-                                            data-src="{{ asset('asset/images/products/bags/newproduct1.jpg') }}"
+                                    <a href="{{ route('product') }}" class="image img-style d-block">
+                                        <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/2.png') }}"
+                                            data-src="{{ asset('asset/images/cls-categories/grid-cls/zilly/2.png') }}"
                                             alt="Handbags" class="lazyload">
                                     </a>
                                     <div class="cls-btn text-center">
-                                        <a href="product.php" class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
+                                        <a href="{{ route('product') }}"
+                                            class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
                                             Classic Handbags <i class="icon icon-arrow-top-left"></i>
                                         </a>
                                     </div>
@@ -520,8 +389,8 @@
                             <div class="swiper-slide">
                                 <div class="wg-cls style-abs asp-1 hover-img">
                                     <a href="{{ route('product') }}" class="image img-style d-block">
-                                        <img src="{{ asset('asset/images/products/bags/newproduct2.jpg') }}"
-                                            data-src="{{ asset('asset/images/products/bags/newproduct2.jpg') }}"
+                                        <img src="{{ asset('asset\images\cls-categories\grid-cls\zilly\5.png') }}"
+                                            data-src="{{ asset('asset\images\cls-categories\grid-cls\zilly\5.png') }}"
                                             alt="Backpacks" class="lazyload">
                                     </a>
                                     <div class="cls-btn text-center">
@@ -537,12 +406,13 @@
                             <div class="swiper-slide">
                                 <div class="wg-cls style-abs asp-1 hover-img">
                                     <a href="{{ route('product') }}" class="image img-style d-block">
-                                        <img src="{{ asset('asset/images/products/bags/newproduct3.jpg') }}"
-                                            data-src="{{ asset('asset/images/products/bags/newproduct3.jpg') }}"
+                                        <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/8.png') }}"
+                                            data-src="{{ asset('asset/images/cls-categories/grid-cls/zilly/8.png') }}"
                                             alt="Office Bags" class="lazyload">
                                     </a>
                                     <div class="cls-btn text-center">
-                                        <a href="product.php" class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
+                                        <a href="{{ route('product') }}"
+                                            class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
                                             Office Bags <i class="icon icon-arrow-top-left"></i>
                                         </a>
                                     </div>
@@ -556,88 +426,29 @@
                 </div>
             </div>
         </div>
-        <!-- /Collection -->
-        <!-- Banner Lookbook -->
         <section class="flat-spacing-3 pt-0">
             <div class="container">
-                <div class="banner-lookbook">
-                    <img class="img-banner" src="{{ asset('asset/images/banner/bannernew.jpg') }}"
-                        data-src="{{ asset('asset/images/banner/bannernew.jpg') }}" alt="Bag Lookbook">
+                <div class="banner-lookbook split-layout">
 
-                    <!-- LOOKBOOK ITEM 1 -->
-                    <div class="lookbook-item position1">
-                        <div class="dropdown dropup-center dropdown-custom">
-                            <div role="dialog" class="tf-pin-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span></span>
-                            </div>
-
-                            <div class="dropdown-menu">
-                                <div class="loobook-product style-row">
-                                    <div class="img-style">
-                                        <img src="{{ asset('asset/images/products/bags/newproduct3.jpg') }}"
-                                            alt="Premium Office Laptop Bag">
-                                    </div>
-
-                                    <div class="content">
-                                        <div class="info">
-                                            <a href="product-detail.php" class="text-md fw-medium text-line-clamp-1 link">
-                                                Premium Office Laptop Bag
-                                            </a>
-
-                                            <p class="price-wrap text-md fw-medium">
-                                                <span class="price-new">₹3,999<span class="zero">.00</span></span>
-                                                <span class="price-old">₹5,499<span class="zero">.00</span></span>
-                                            </p>
-                                        </div>
-
-                                        <a href="#quickView" data-bs-toggle="modal" class="btn-lookbook hover-tooltip">
-                                            <i class="icon-view"></i>
-                                            <span class="tooltip">Quick view</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- COLUMN 1 : VIDEO -->
+                    <div class="media-box">
+                        <video autoplay muted loop playsinline preload="auto" class="media-video">
+                            <source src="{{ asset('asset/video/1.mp4') }}" type="video/mp4">
+                        </video>
                     </div>
 
-                    <!-- LOOKBOOK ITEM 2 -->
-                    <div class="lookbook-item position2">
-                        <div class="dropdown dropup-center dropdown-custom">
-                            <div role="dialog" class="tf-pin-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span></span>
-                            </div>
-
-                            <div class="dropdown-menu">
-                                <div class="loobook-product style-row">
-                                    <div class="img-style">
-                                        <img src="{{ asset('asset/images/products/bags/newproduct1.jpg') }}"
-                                            alt="Classic Leather Handbag">
-                                    </div>
-
-                                    <div class="content">
-                                        <div class="info">
-                                            <a href="product-detail.php" class="text-md fw-medium text-line-clamp-1 link">
-                                                Classic Leather Handbag
-                                            </a>
-
-                                            <p class="price-wrap text-md fw-medium">
-                                                <span class="price-new">₹2,799<span class="zero">.00</span></span>
-                                                <span class="price-old">₹3,999<span class="zero">.00</span></span>
-                                            </p>
-                                        </div>
-
-                                        <a href="#quickView" data-bs-toggle="modal" class="btn-lookbook hover-tooltip">
-                                            <i class="icon-view"></i>
-                                            <span class="tooltip">Quick view</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- COLUMN 2 : VIDEO -->
+                    <div class="media-box">
+                        <video autoplay muted loop playsinline preload="auto" class="media-video">
+                            <source src="{{ asset('asset/video/2.mp4') }}" type="video/mp4">
+                        </video>
                     </div>
+
                 </div>
             </div>
         </section>
+
+
         <!-- /Banner Lookbook -->
         <!-- Testimonial -->
         <section class="flat-spacing-3 pt-0">
@@ -692,7 +503,7 @@
 
                                         <div class="box-author">
                                             <div class="avt">
-                                                <img src="{{ asset('asset/images/testimonial/author/author-1.jpg') }}"
+                                                <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/6.png') }}"
                                                     alt="">
                                             </div>
                                             <p class="name-author text-sm fw-medium">Arjun K.</p>
@@ -704,14 +515,15 @@
                                     <div class="bot">
                                         <div class="box-avt">
                                             <div class="avatar rounded-0">
-                                                <img src="{{ asset('asset/images/products/bags/product6.jpg') }}"
+                                                <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/6.png') }}"
                                                     alt="">
                                             </div>
                                             <div class="box-price">
-                                                <a href="{{ route('product-details') }}" class="link name-item text-md fw-medium">
+                                                <a href="{{ route('product-details') }}"
+                                                    class="link name-item text-md fw-medium">
                                                     Premium Office Laptop Bag
                                                 </a>
-                                                <p class="price text-md fw-medium">₹3,999</p>
+                                                <p class="price text-md fw-medium">₹999</p>
                                             </div>
                                         </div>
                                     </div>
@@ -740,7 +552,7 @@
 
                                         <div class="box-author">
                                             <div class="avt">
-                                                <img src="{{ asset('asset/images/testimonial/author/author-2.jpg') }}"
+                                                <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/9.png') }}"
                                                     alt="">
                                             </div>
                                             <p class="name-author text-sm fw-medium">Sneha R.</p>
@@ -752,14 +564,15 @@
                                     <div class="bot">
                                         <div class="box-avt">
                                             <div class="avatar rounded-0">
-                                                <img src="{{ asset('asset/images/products/bags/product5.jpg') }}"
+                                                <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/9.png') }}"
                                                     alt="">
                                             </div>
                                             <div class="box-price">
-                                                <a href="{{ route('product-details') }}" class="link name-item text-md fw-medium">
+                                                <a href="{{ route('product-details') }}"
+                                                    class="link name-item text-md fw-medium">
                                                     Classic Leather Handbag
                                                 </a>
-                                                <p class="price text-md fw-medium">₹2,799</p>
+                                                <p class="price text-md fw-medium">₹1,799</p>
                                             </div>
                                         </div>
                                     </div>
@@ -788,7 +601,7 @@
 
                                         <div class="box-author">
                                             <div class="avt">
-                                                <img src="{{ asset('asset/images/testimonial/author/author-3.jpg') }}"
+                                                <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/3.png') }}"
                                                     alt="">
                                             </div>
                                             <p class="name-author text-sm fw-medium">Rahul S.</p>
@@ -800,14 +613,15 @@
                                     <div class="bot">
                                         <div class="box-avt">
                                             <div class="avatar rounded-0">
-                                                <img src="{{ asset('asset/images/products/bags/product7.jpg') }}"
+                                                <img src="{{ asset('asset/images/cls-categories/grid-cls/zilly/3.png') }}"
                                                     alt="">
                                             </div>
                                             <div class="box-price">
-                                                <a href="{{ route('product-details') }}" class="link name-item text-md fw-medium">
+                                                <a href="{{ route('product-details') }}"
+                                                    class="link name-item text-md fw-medium">
                                                     Urban Travel Backpack
                                                 </a>
-                                                <p class="price text-md fw-medium">₹3,199</p>
+                                                <p class="price text-md fw-medium">₹2,199</p>
                                             </div>
                                         </div>
                                     </div>
@@ -822,106 +636,7 @@
                 </div>
             </div>
         </section>
-        <section class="flat-spacing-8 pt-0">
-            <div class="container">
-                <div class="flat-title wow fadeInUp">
-                    <h3 class="title fw-semibold font-7 letter-0">Shop by @Zilly</h3>
-                </div>
-                <div dir="ltr" class="swiper tf-swiper"
-                    data-swiper='{
-                        "slidesPerView": 2,
-                        "spaceBetween": 10,
-                        "speed": 800,
-                        "observer": true,
-                        "observeParents": true,
-                        "slidesPerGroup": 2,
-                        "pagination": { "el": ".sw-pagination-gallery", "clickable": true },
-                        "breakpoints": {
-                        "768": { "slidesPerView": 3},
-                        "1200": { "slidesPerView": 5}
-                        }
-                    }'>
-                    <div class="swiper-wrapper wow fadeInUp">
-                        <!-- item 1 -->
-                        <div class="swiper-slide">
-                            <div class="gallery-item hover-img hover-overlay">
-                                <div class="image img-style">
-                                    <img src="{{ asset('asset/images/gallery/bags/bag1.jpg') }}"
-                                        data-src="{{ asset('asset/images/gallery/bags/bag1.jpg') }}"
-                                        alt="Women's Handbag" class="lazyload">
-                                </div>
-                                <a href="{{ route('product-details') }}" class="box-icon hover-tooltip">
-                                    <span class="icon icon-cart2"></span>
-                                    <span class="tooltip">View Product</span>
-                                </a>
-                            </div>
-                        </div>
 
-                        <!-- item 2 -->
-                        <div class="swiper-slide">
-                            <div class="gallery-item hover-img hover-overlay">
-                                <div class="image img-style">
-                                    <img src="{{ asset('asset/images/gallery/bags/bag2.jpg') }}"
-                                        data-src="{{ asset('asset/images/gallery/bags/bag2.jpg') }}"
-                                        alt="Women's Shoulder Bag" class="lazyload">
-                                </div>
-                                <a href="{{ route('product-details') }}" class="box-icon hover-tooltip">
-                                    <span class="icon icon-cart2"></span>
-                                    <span class="tooltip">View Product</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- item 3 -->
-                        <div class="swiper-slide">
-                            <div class="gallery-item hover-img hover-overlay">
-                                <div class="image img-style">
-                                    <img src="{{ asset('asset/images/gallery/bags/bag3.jpg') }}"
-                                        data-src="{{ asset('asset/images/gallery/bags/bag3.jpg') }}"
-                                        alt="Women's Tote Bag" class="lazyload">
-                                </div>
-                                <a href="{{ route('product-details') }}" class="box-icon hover-tooltip">
-                                    <span class="icon icon-cart2"></span>
-                                    <span class="tooltip">View Product</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- item 4 -->
-                        <div class="swiper-slide">
-                            <div class="gallery-item hover-img hover-overlay">
-                                <div class="image img-style">
-                                    <img src="{{ asset('asset/images/gallery/bags/bag4.jpg') }}"
-                                        data-src="{{ asset('asset/images/gallery/bags/bag4.jpg') }}"
-                                        alt="Women's Crossbody Bag" class="lazyload">
-                                </div>
-                                <a href="{{ route('product-details') }}" class="box-icon hover-tooltip">
-                                    <span class="icon icon-cart2"></span>
-                                    <span class="tooltip">View Product</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- item 5 -->
-                        <div class="swiper-slide">
-                            <div class="gallery-item hover-img hover-overlay">
-                                <div class="image img-style">
-                                    <img src="{{ asset('asset/images/gallery/bags/bag5.jpg') }}"
-                                        data-src="{{ asset('asset/images/gallery/bags/bag5.jpg') }}"
-                                        alt="Women's Evening Bag" class="lazyload">
-                                </div>
-                                <a href="{{ route('product-details') }}" class="box-icon hover-tooltip">
-                                    <span class="icon icon-cart2"></span>
-                                    <span class="tooltip">View Product</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <span class="d-flex d-xl-none sw-dot-default sw-pagination-gallery justify-content-center"></span>
-                </div>
-            </div>
-        </section>
         <!-- /Shop Gram -->
         <!-- Icon box -->
         <div class="line-top flat-spacing-5">
@@ -993,111 +708,7 @@
                 </div>
             </div>
         </div>
-        <!-- /Icon box -->
-
-
-        <!-- /register -->
-
-        <!-- Reset pass -->
-        <div class="offcanvas offcanvas-end popup-style-1 popup-reset-pass" id="resetPass">
-            <div class="canvas-wrapper">
-                <div class="canvas-header popup-header">
-                    <span class="title">Reset Your Password</span>
-                    <button class="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="canvas-body popup-inner">
-                    <form action="#" class="form-login">
-                        <div class="">
-                            <p class="text text-sm text-main-2">Forgot your password? No worries! Enter your registered
-                                email to receive a link and securely reset it in just a few steps.</p>
-                            <fieldset class="email mb_12">
-                                <input type="email" placeholder="Enter Your Email*" required>
-                            </fieldset>
-                        </div>
-                        <div class="bot">
-                            <div class="button-wrap">
-                                <button class="subscribe-button tf-btn animate-btn bg-dark-2 w-100" type="submit">Reset
-                                    Password</button>
-                                <button type="button" data-bs-dismiss="offcanvas"
-                                    class="tf-btn btn-out-line-dark2 w-100">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- quick add -->
-        <div class="modal fade modalCentered popup-quickadd" id="quickAdd">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <span class="icon-close icon-close-popup" data-bs-dismiss="modal"></span>
-                    <div class="main-product-quickadd card-product">
-                        <div class="item-product-info">
-                            <div class="product-img">
-                                <img class="img-product lazyload"
-                                    data-src="{{ asset('asset/images/products/footwear/product-2.jpg') }}"
-                                    src="{{ asset('asset/images/products/footwear/product-2.jpg') }}"
-                                    alt="image-product">
-                            </div>
-                            <div class="content-box">
-                                <a href="{{ route('product-details') }}" class="name-product link text-lg">Nike Air Force 1
-                                    '07</a>
-                                <div class="price-show-badge">
-                                    <div class="price-wrap">
-                                        <span class="price-new">$3,000.00</span>
-                                        <span class="price-old">$3,200.00</span>
-                                    </div>
-                                    <span class="on-sale-item">20% Off</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item-product-variant">
-                            <div class="quickadd-variant-color">
-                                <div class="variant-label text-md">Color: <span class="variant-value">Black</span>
-                                </div>
-                                <ul class="list-color-product">
-                                    <li class="list-color-item color-swatch hover-tooltip tooltip-bot active">
-                                        <span class="tooltip color-label">Black</span>
-                                        <span class="swatch-value bg-dark"></span>
-                                        <img class="lazyload"
-                                            data-src="{{ asset('asset/images/products/footwear/product-2.jpg') }}"
-                                            src="{{ asset('asset/images/products/footwear/product-2.jpg') }}"
-                                            alt="image-product">
-                                    </li>
-                                    <li class="list-color-item color-swatch hover-tooltip tooltip-bot line">
-                                        <span class="tooltip color-label">White</span>
-                                        <span class="swatch-value bg-white"></span>
-                                        <img class="lazyload"
-                                            data-src="{{ asset('asset/images/products/footwear/product-1.jpg') }}"
-                                            src="{{ asset('asset/images/products/footwear/product-1.jpg') }}"
-                                            alt="image-product">
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="item-product-quantity">
-                            <div class="label text-md">Quantity</div>
-                            <div class="wg-quantity">
-                                <button class="btn-quantity minus-btn">-</button>
-                                <input class="quantity-product font-4" type="text" name="number" value="1">
-                                <button class="btn-quantity plus-btn">+</button>
-                            </div>
-                        </div>
-                        <div class="item-product-group-btn">
-                            <a href="{{ route('shoppingCart') }}" data-bs-toggle="offcanvas" class="tf-btn animate-btn atc">Add to
-                                cart</a>
-                            <a href="{{ route('wish-list') }}" class="box-icon"><i class="icon icon-heart"></i></a>
-                            <a href="javascript:void(0);" class="box-icon btn-compare"><i
-                                    class="icon icon-compare"></i></a>
-                            <a href="{{ route('shoppingCart') }}" class="tf-btn btn-primary animate-btn w-100">Buy It Now</a>
-                        </div>
-                        <a href="{{ route('checkout') }}" class="tf-btn btn-line-dark payment-link">More payment options</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    
         <!-- /quick add -->
         <script src="{{ asset('asset/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('asset/js/jquery.min.js') }}"></script>

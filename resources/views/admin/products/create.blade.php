@@ -46,22 +46,21 @@
                     <label class="form-label">Product Name</label>
                     <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                 </div>
-
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Price</label>
-                    <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}"
-                        required>
-                </div>
-
+                <!-- Original Price -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Original Price</label>
-                    <input type="number" step="0.01" name="original_price" class="form-control"
+                    <input type="number" step="0.01" id="originalPrice" name="original_price" class="form-control"
                         value="{{ old('original_price') }}">
                 </div>
-
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="number" step="0.01" id="price" name="price" class="form-control"
+                        value="{{ old('price') }}" required>
+                </div>
+                <!-- Discount (%) -->
                 <div class="col-md-4 mb-3">
                     <label class="form-label">Discount (%)</label>
-                    <input type="number" name="discount_percent" class="form-control"
+                    <input type="number" step="0.01" id="discountPercent" name="discount_percent" class="form-control"
                         value="{{ old('discount_percent') }}">
                 </div>
 
@@ -69,112 +68,117 @@
                     <label class="form-label">Short Description</label>
                     <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
                 </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Color & Size</label>
 
-                    <div id="colorSizeWrapper">
+                <div class="d-flex gap-5 align-items-center">
 
-                        {{-- Default one row --}}
-                        <div class="row g-2 mb-2 color-size-row">
-                            <div class="col-md-5">
-                                <select name="color_size[0][color]" class="form-select" required>
-                                    <option value="">-- Color --</option>
-                                    <option value="red">Red</option>
-                                    <option value="blue">Blue</option>
-                                    <option value="black">Black</option>
-                                    <option value="white">White</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-5">
-                                <select name="color_size[0][size]" class="form-select" required>
-                                    <option value="">-- Size --</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-danger removeRow">X</button>
-                            </div>
-                        </div>
-
+                    <!-- STATUS -->
+                    <div class="form-check mt-2">
+                        <input type="checkbox" name="status" value="1" class="form-check-input"
+                            {{ old('status', $product->status ?? 0) == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label">Active</label>
                     </div>
 
-                    <button type="button" class="btn btn-secondary mt-2" id="addRow">
-                        + 
-                    </button>
-                </div>
-                <script>
-                    let rowIndex = 1;
+                    <!-- TODAY PICK -->
+                    <div class="form-check mt-2">
+                        <input type="checkbox" name="today_pick" value="1" class="form-check-input"
+                            {{ old('today_pick', $product->today_pick ?? 0) == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label">Today's pick show</label>
+                    </div>
 
-                    document.getElementById('addRow').addEventListener('click', function() {
-                        const wrapper = document.getElementById('colorSizeWrapper');
-
-                        const row = document.createElement('div');
-                        row.classList.add('row', 'g-2', 'mb-2', 'color-size-row');
-
-                        row.innerHTML = `
-        <div class="col-md-5">
-            <select name="color_size[${rowIndex}][color]" class="form-select" required>
-                <option value="">-- Color --</option>
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
-                <option value="black">Black</option>
-                <option value="white">White</option>
-            </select>
-        </div>
-
-        <div class="col-md-5">
-            <select name="color_size[${rowIndex}][size]" class="form-select" required>
-                <option value="">-- Size --</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-            </select>
-        </div>
-
-        <div class="col-md-2">
-            <button type="button" class="btn btn-danger removeRow">X</button>
-        </div>
-    `;
-
-                        wrapper.appendChild(row);
-                        rowIndex++;
-                    });
-
-                    document.addEventListener('click', function(e) {
-                        if (e.target.classList.contains('removeRow')) {
-                            e.target.closest('.color-size-row').remove();
-                        }
-                    });
-                </script>
-
-
-                <div class="form-check mt-2">
-                    <input type="checkbox" name="status" value="1" class="form-check-input" checked>
-                    <label class="form-check-label">Active</label>
                 </div>
 
-                <div class="col-md-12 mb-3">
+
+
+                <div class="col-md-12 mt-3">
                     <label class="form-label">Product Images</label>
                     <input type="file" name="product_images[]" class="form-control" multiple accept="image/*">
                 </div>
 
             </div>
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary mt-3">
                 Save Product
             </button>
 
-            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary mt-3">
                 Back
             </a>
 
         </form>
 
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceInput = document.getElementById('price');
+            const originalPriceInput = document.getElementById('originalPrice');
+            const discountInput = document.getElementById('discountPercent');
+            const discountBadge = document.getElementById('discountBadge');
+
+            // Calculate price from discount
+            function updatePriceFromDiscount() {
+                const original = parseFloat(originalPriceInput.value) || 0;
+                let discount = parseFloat(discountInput.value) || 0;
+
+                if (original > 0) {
+                    // Ensure discount is between 0 and 100
+                    if (discount < 0) discount = 0;
+                    if (discount > 100) discount = 100;
+
+                    const price = original - (original * discount / 100);
+                    priceInput.value = price.toFixed(2);
+                    discountInput.value = discount.toFixed(2);
+                    discountBadge.textContent = discount.toFixed(2) + '% off';
+                } else {
+                    priceInput.value = '';
+                    discountInput.value = '';
+                    discountBadge.textContent = '0% off';
+                }
+            }
+
+            // Calculate discount from price
+            function updateDiscountFromPrice() {
+                const original = parseFloat(originalPriceInput.value) || 0;
+                let price = parseFloat(priceInput.value) || 0;
+
+                if (original > 0) {
+                    let discount = ((original - price) / original) * 100;
+
+                    // Keep discount between 0 and 100
+                    if (discount < 0) discount = 0;
+                    if (discount > 100) discount = 100;
+
+                    discountInput.value = discount.toFixed(2);
+                    discountBadge.textContent = discount.toFixed(2) + '% off';
+                } else {
+                    discountInput.value = 0;
+                    discountBadge.textContent = '0% off';
+                }
+            }
+
+            function updateAll() {
+                const original = parseFloat(originalPriceInput.value) || 0;
+
+                if (original > 0) {
+                    if (document.activeElement === discountInput) {
+                        updatePriceFromDiscount();
+                    } else {
+                        updateDiscountFromPrice();
+                    }
+                } else {
+                    priceInput.value = '';
+                    discountInput.value = '';
+                    discountBadge.textContent = '0% off';
+                }
+            }
+
+            priceInput.addEventListener('input', updateAll);
+            discountInput.addEventListener('input', updateAll);
+            originalPriceInput.addEventListener('input', updateAll);
+
+            // Initialize on page load
+            updateAll();
+        });
+    </script>
+
+
 @endsection

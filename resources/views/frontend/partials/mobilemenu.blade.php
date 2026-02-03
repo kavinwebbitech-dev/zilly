@@ -31,27 +31,12 @@
                     </li>
                     <li>
                         Phone:
-                        <b class="fw-medium">+91 98765 43210</b>
+                        <b class="fw-medium">+91 86678 73341</b>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="mb-bottom">
-            <div class="bottom-bar-language">
-                <div class="tf-currencies">
-                    <select class="image-select center style-default type-currencies">
-                        <option selected data-thumbnail="images/country/in.png">INR</option>
-                        <option data-thumbnail="images/country/us.png">USD</option>
-                        <option data-thumbnail="images/country/eu.png">EUR</option>
-                    </select>
-                </div>
-                <div class="tf-languages">
-                    <select class="image-select center style-default type-languages">
-                        <option selected>English</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+        
     </div>
 </div>
 <!-- /mobile menu -->

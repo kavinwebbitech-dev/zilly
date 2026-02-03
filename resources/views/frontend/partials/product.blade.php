@@ -48,7 +48,7 @@
                                             <div class="facet-title text-xl fw-medium" data-bs-toggle="collapse"
                                                 data-bs-target="#collections" aria-expanded="true">
                                                 <span>Bag Categories</span>
-                                                <span class="icon icon-arrow-up"></span>
+                                                {{-- <span class="icon icon-arrow-up"></span> --}}
                                             </div>
 
                                             <div id="collections" class="collapse show">
@@ -74,27 +74,33 @@
                                             <div class="facet-title text-xl fw-medium" data-bs-target="#availability"
                                                 data-bs-toggle="collapse" aria-expanded="true">
                                                 <span>Availability</span>
-                                                <span class="icon icon-arrow-up"></span>
+                                                {{-- <span class="icon icon-arrow-up"></span> --}}
                                             </div>
 
                                             <div id="availability" class="collapse show">
                                                 <ul class="collapse-body filter-group-check current-scrollbar">
                                                     <li class="list-item">
-                                                        <input type="radio" name="availability" class="tf-check"
-                                                            id="inStock">
+                                                        <input type="radio" name="availability" value="in"
+                                                            class="tf-check" id="inStock"
+                                                            {{ request('availability') == 'in' ? 'checked' : '' }}>
                                                         <label for="inStock" class="label">
-                                                            <span>In stock</span> <span class="count">(42)</span>
+                                                            <span>In stock</span>
+                                                            <span class="count">({{ $inStockCount }})</span>
                                                         </label>
                                                     </li>
+
                                                     <li class="list-item">
-                                                        <input type="radio" name="availability" class="tf-check"
-                                                            id="outStock">
+                                                        <input type="radio" name="availability" value="out"
+                                                            class="tf-check" id="outStock"
+                                                            {{ request('availability') == 'out' ? 'checked' : '' }}>
                                                         <label for="outStock" class="label">
-                                                            <span>Out of stock</span> <span class="count">(5)</span>
+                                                            <span>Out of stock</span>
+                                                            <span class="count">({{ $outStockCount }})</span>
                                                         </label>
                                                     </li>
                                                 </ul>
                                             </div>
+
                                         </div>
 
                                         <!-- PRICE -->
@@ -102,125 +108,58 @@
                                             <div class="facet-title text-xl fw-medium" data-bs-target="#price"
                                                 data-bs-toggle="collapse" aria-expanded="true">
                                                 <span>Price (₹)</span>
-                                                <span class="icon icon-arrow-up"></span>
+                                                {{-- <span class="icon icon-arrow-up"></span> --}}
                                             </div>
 
                                             <div id="price" class="collapse show">
                                                 <div class="collapse-body widget-price filter-price">
-                                                    <span class="reset-price">Reset</span>
-                                                    <div class="price-val-range" data-min="999" data-max="6999"></div>
+                                                    <!-- FIXED RANGE -->
+                                                    <div class="price-val-range" data-min="999" data-max="2999"></div>
+
                                                     <div class="box-value-price">
                                                         <span class="text-sm">Price:</span>
                                                         <div class="price-box">
                                                             <div class="price-val" data-currency="₹">999</div>
                                                             <span>-</span>
-                                                            <div class="price-val" data-currency="₹">6999</div>
+                                                            <div class="price-val" data-currency="₹">2999</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- COLOR -->
-                                        <div class="widget-facet">
-                                            <div class="facet-title text-xl fw-medium" data-bs-target="#color"
-                                                data-bs-toggle="collapse" aria-expanded="true">
-                                                <span>Color</span>
-                                                <span class="icon icon-arrow-up"></span>
-                                            </div>
-
-                                            <div id="color" class="collapse show">
-                                                <div class="collapse-body filter-color-box flat-check-list">
-                                                    <div class="check-item color-item"><span
-                                                            class="color bg-dark"></span><span
-                                                            class="color-text">Black</span>
-                                                    </div>
-                                                    <div class="check-item color-item"><span
-                                                            class="color bg-brown"></span><span
-                                                            class="color-text">Brown</span></div>
-                                                    <div class="check-item color-item"><span
-                                                            class="color bg-beige"></span><span
-                                                            class="color-text">Beige</span></div>
-                                                    <div class="check-item color-item"><span
-                                                            class="color bg-pink"></span><span
-                                                            class="color-text">Pink</span>
-                                                    </div>
-                                                    <div class="check-item color-item"><span
-                                                            class="color bg-red"></span><span
-                                                            class="color-text">Red</span>
-                                                    </div>
-                                                    <div class="check-item color-item"><span
-                                                            class="color bg-grey-4"></span><span
-                                                            class="color-text">Grey</span></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <!-- BAG SIZE -->
-                                        <div class="widget-facet">
-                                            <div class="facet-title text-xl fw-medium" data-bs-target="#size"
-                                                data-bs-toggle="collapse" aria-expanded="true">
-                                                <span>Bag Size</span>
-                                                <span class="icon icon-arrow-up"></span>
-                                            </div>
+                                        <div class="collapse-body filter-size-box flat-check-list">
 
-                                            <div id="size" class="collapse show">
-                                                <div class="collapse-body filter-size-box flat-check-list">
-                                                    <div class="check-item size-item"><span class="size">Small</span>
-                                                        <span class="count">(10)</span>
-                                                    </div>
-                                                    <div class="check-item size-item"><span class="size">Medium</span>
-                                                        <span class="count">(18)</span>
-                                                    </div>
-                                                    <div class="check-item size-item"><span class="size">Large</span>
-                                                        <span class="count">(14)</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <!-- SMALL -->
+                                            <a href="{{ request()->fullUrlWithQuery(['bag_size' => 'tote']) }}"
+                                                class="check-item size-item {{ request('bag_size') == 'tote' ? 'active' : '' }}">
+                                                <span class="size">Small</span>
+                                            </a>
+
+                                            <!-- MEDIUM -->
+                                            <a href="{{ request()->fullUrlWithQuery(['bag_size' => 'goldenchain']) }}"
+                                                class="check-item size-item {{ request('bag_size') == 'goldenchain' ? 'active' : '' }}">
+                                                <span class="size">Medium</span>
+                                            </a>
+
+                                            <!-- CLEAR -->
+                                            @if (request()->has('bag_size'))
+                                                <a href="{{ request()->url() }}" class="check-item size-item">
+                                                    <span class="size">Clear</span>
+                                                </a>
+                                            @endif
+
                                         </div>
 
-                                        <!-- BRAND -->
-                                        {{-- <div class="widget-facet">
-                                            <div class="facet-title text-xl fw-medium" data-bs-target="#brand"
-                                                data-bs-toggle="collapse" aria-expanded="true">
-                                                <span>Brand</span>
-                                                <span class="icon icon-arrow-up"></span>
-                                            </div>
 
-                                            <div id="brand" class="collapse show">
-                                                <ul class="collapse-body filter-group-check current-scrollbar">
-                                                    <li class="list-item">
-                                                        <input type="radio" name="brand" class="tf-check"
-                                                            id="zilly">
-                                                        <label for="zilly" class="label">
-                                                            <span>Zilly</span> <span class="count">(15)</span>
-                                                        </label>
-                                                    </li>
-                                                    <li class="list-item">
-                                                        <input type="radio" name="brand" class="tf-check"
-                                                            id="luxe">
-                                                        <label for="luxe" class="label">
-                                                            <span>LuxeCarry</span> <span class="count">(12)</span>
-                                                        </label>
-                                                    </li>
-                                                    <li class="list-item">
-                                                        <input type="radio" name="brand" class="tf-check"
-                                                            id="urban">
-                                                        <label for="urban" class="label">
-                                                            <span>Urban Muse</span> <span class="count">(10)</span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div> --}}
 
-                                        {{-- BRAND FILTER --}}
                                         {{-- BRAND --}}
                                         <div class="widget-facet">
                                             <div class="facet-title text-xl fw-medium" data-bs-toggle="collapse"
                                                 data-bs-target="#brand" aria-expanded="true">
                                                 <span>Brand</span>
-                                                <span class="icon icon-arrow-up"></span>
+                                                {{-- <span class="icon icon-arrow-up"></span> --}}
                                             </div>
 
                                             <div id="brand" class="collapse show">
@@ -253,7 +192,7 @@
 
 
                                         <!-- ON SALE -->
-                                        <div class="widget-facet">
+                                        {{-- <div class="widget-facet">
                                             <div class="facet-title text-xl fw-medium"><span>On Sale</span></div>
                                             <ul class="collapse-body list-recent">
                                                 <li>
@@ -293,10 +232,10 @@
                                                     </div>
                                                 </li>
                                             </ul>
-                                        </div>
+                                        </div> --}}
 
                                         <!-- SIDEBAR BANNER -->
-                                        <div class="widget-facet">
+                                        {{-- <div class="widget-facet">
                                             <div class="sb-banner hover-img">
                                                 <div class="image img-style">
                                                     <img src="{{ asset('asset/images/products/bags/newproduct3.jpg') }}"
@@ -312,7 +251,7 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                     </div>
 
@@ -320,7 +259,7 @@
                             </div>
                         </div>
                         <div class="col-xl-9">
-                            <div class="tf-shop-control">
+                            {{-- <div class="tf-shop-control">
                                 <div class="tf-group-filter">
                                     <button id="filterShop" class="tf-btn-filter d-flex d-xl-none">
                                         <span class="icon icon-filter"></span><span class="text">Filter</span>
@@ -349,7 +288,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <ul class="tf-control-layout">
+                                <ul class="tf-control-layout ">
                                     <li class="tf-view-layout-switch sw-layout-list list-layout" data-value-layout="list">
                                         <div class="item icon-list">
                                             <span></span>
@@ -379,7 +318,7 @@
                                     </li>
 
                                 </ul>
-                            </div>
+                            </div> --}}
                             <div class="wrapper-control-shop">
                                 <div class="meta-filter-shop">
                                     <div id="product-count-grid" class="count-text"></div>
@@ -394,7 +333,7 @@
                                         <div class="card-product grid">
 
                                             <div class="card-product-wrapper">
-                                                <a href="{{ route('product-details', $product->id) }}"
+                                                <a href="{{ route('product.details', $product->id) }}"
                                                     class="product-img">
 
                                                     {{-- MAIN IMAGE --}}
@@ -417,13 +356,24 @@
 
                                                 <ul class="list-product-btn">
                                                     <li>
-                                                        <a href="#miniCartItems" data-bs-toggle="offcanvas"
-                                                            data-id="{{ $product->id }}"
-                                                            class="box-icon hover-tooltip tooltip-left add-to-cart">
-                                                            <span class="icon icon-cart2"></span>
-                                                            <span class="tooltip">Add to Cart</span>
-                                                        </a>
+                                                        @guest
+                                                            <a href="#login" data-bs-toggle="offcanvas"
+                                                                class="box-icon hover-tooltip tooltip-left">
+                                                                <span class="icon icon-cart2"></span>
+                                                                <span class="tooltip">Login to Add</span>
+                                                            </a>
+                                                        @endguest
+
+                                                        @auth
+                                                            <a href="#miniCartItems" data-id="{{ $product->id }}"
+                                                                class="box-icon hover-tooltip tooltip-left add-to-cart"
+                                                                data-bs-toggle="offcanvas">
+                                                                <span class="icon icon-cart2"></span>
+                                                                <span class="tooltip">Add to Cart</span>
+                                                            </a>
+                                                        @endauth
                                                     </li>
+
 
                                                     <li>
                                                         <a href="javascript:void(0);"
@@ -432,13 +382,6 @@
                                                             <span class="icon icon-heart2"></span>
                                                             <span class="tooltip">Add to Wishlist</span>
                                                         </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0)" class="box-icon quick-view-btn"
-                                                            data-id="{{ $product->id }}">
-                                                            <i class="icon-eye"></i>
-                                                        </a>
-
                                                     </li>
 
                                                 </ul>
@@ -840,34 +783,7 @@
 
         </div>
 
-        <!-- Reset pass -->
-        <div class="offcanvas offcanvas-end popup-style-1 popup-reset-pass" id="resetPass">
-            <div class="canvas-wrapper">
-                <div class="canvas-header popup-header">
-                    <span class="title">Reset Your Password</span>
-                    <button class="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="canvas-body popup-inner">
-                    <form action="#" class="form-login">
-                        <div class="">
-                            <p class="text text-sm text-main-2">Forgot your password? No worries! Enter your registered
-                                email to receive a link and securely reset it in just a few steps.</p>
-                            <fieldset class="email mb_12">
-                                <input type="email" placeholder="Enter Your Email*" required>
-                            </fieldset>
-                        </div>
-                        <div class="bot">
-                            <div class="button-wrap">
-                                <button class="subscribe-button tf-btn animate-btn bg-dark-2 w-100" type="submit">Reset
-                                    Password</button>
-                                <button type="button" data-bs-dismiss="offcanvas"
-                                    class="tf-btn btn-out-line-dark2 w-100">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    
 
     </div>
 
@@ -900,49 +816,48 @@
 
 
 
-        $(document).on('click', '.quick-view-btn', function () {
+        $(document).on('click', '.quick-view-btn', function() {
 
-    let productId = $(this).data('id');
+            let productId = $(this).data('id');
 
-    $.get(`/quick-view/${productId}`, function (res) {
+            $.get(`/quick-view/${productId}`, function(res) {
 
-        // Name & price
-        $('#qv-name').text(res.name);
-        $('#qv-price').text('₹' + res.price);
-        $('#qv-old-price').text(res.old_price ? '₹' + res.old_price : '');
-        $('#qv-description').text(res.description);
+                // Name & price
+                $('#qv-name').text(res.name);
+                $('#qv-price').text('₹' + res.price);
+                $('#qv-old-price').text(res.old_price ? '₹' + res.old_price : '');
+                $('#qv-description').text(res.description);
 
-        // Images
-        let imagesHtml = '';
-        res.images.forEach(img => {
-            imagesHtml += `
+                // Images
+                let imagesHtml = '';
+                res.images.forEach(img => {
+                    imagesHtml += `
                 <div class="swiper-slide">
                     <img src="/storage/${img}" class="img-fluid">
                 </div>`;
+                });
+                $('#qv-images').html(imagesHtml);
+
+                // Colors
+                let colorsHtml = '';
+                res.colors.forEach(color => {
+                    colorsHtml += `<span class="badge bg-secondary">${color}</span>`;
+                });
+                $('#qv-colors').html(colorsHtml);
+
+                // Sizes
+                let sizesHtml = '';
+                res.sizes.forEach(size => {
+                    sizesHtml += `<span class="badge bg-light text-dark">${size}</span>`;
+                });
+                $('#qv-sizes').html(sizesHtml);
+
+                // Cart button
+                $('#qv-add-to-cart').data('id', res.id);
+
+                // Open modal
+                $('#quickView').modal('show');
+            });
         });
-        $('#qv-images').html(imagesHtml);
-
-        // Colors
-        let colorsHtml = '';
-        res.colors.forEach(color => {
-            colorsHtml += `<span class="badge bg-secondary">${color}</span>`;
-        });
-        $('#qv-colors').html(colorsHtml);
-
-        // Sizes
-        let sizesHtml = '';
-        res.sizes.forEach(size => {
-            sizesHtml += `<span class="badge bg-light text-dark">${size}</span>`;
-        });
-        $('#qv-sizes').html(sizesHtml);
-
-        // Cart button
-        $('#qv-add-to-cart').data('id', res.id);
-
-        // Open modal
-        $('#quickView').modal('show');
-    });
-});
-
     </script>
 @endsection

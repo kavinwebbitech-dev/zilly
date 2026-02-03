@@ -15,6 +15,7 @@ class Cart extends Model
         'qty',
         'original_price',
         'discount_percent',
+        'product_image_id'
     ];
 
     public function product()

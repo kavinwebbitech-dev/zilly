@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Cart;
+use App\Models\Product;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,10 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         View::composer('*', function ($view) {
+        View::composer('*', function ($view) {
             $cartItems = Cart::latest()->get();
             $view->with('cartItems', $cartItems);
         });
+        view()->share(
+            'popularSearches','featuredProducts',
+            Product::latest()->limit(5)->pluck('name')
+        );
+
         /*
         |--------------------------------------------------------------------------
         | Share Cart Data With Shopping Cart Offcanvas
@@ -32,23 +38,23 @@ class AppServiceProvider extends ServiceProvider
         | This ensures $cartItems and $total are available
         | in frontend.partials.shoppingcart on ALL pages
         */
-    //     View::composer('frontend.partials.shoppingcart', function ($view) {
+        //     View::composer('frontend.partials.shoppingcart', function ($view) {
 
-    //         // If user-based cart (recommended)
-    //         $cartItems = Cart::query()
-    //             ->when(auth()->check(), function ($q) {
-    //                 $q->where('user_id', auth()->id());
-    //             })
-    //             ->get();
+        //         // If user-based cart (recommended)
+        //         $cartItems = Cart::query()
+        //             ->when(auth()->check(), function ($q) {
+        //                 $q->where('user_id', auth()->id());
+        //             })
+        //             ->get();
 
-    //         $total = $cartItems->sum(function ($item) {
-    //             return $item->price * $item->qty;
-    //         });
+        //         $total = $cartItems->sum(function ($item) {
+        //             return $item->price * $item->qty;
+        //         });
 
-    //         $view->with([
-    //             'cartItems' => $cartItems,
-    //             'total'     => $total,
-    //         ]);
-    //     });
-     }
+        //         $view->with([
+        //             'cartItems' => $cartItems,
+        //             'total'     => $total,
+        //         ]);
+        //     });
+    }
 }

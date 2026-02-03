@@ -19,25 +19,25 @@
     @endif
 
     {{-- Products Table --}}
-    <div class="card">
-        <div class="card-body">
+
             <table class="table table-bordered table-striped align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th width="5%">#</th>
+                        <th width="5%">S.No</th>
                         <th>Category</th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Original Price</th>
                         <th>Discount %</th>
+                        <th>Status</th>
                         <th width="15%">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @forelse($products as $product)
+                    @forelse($products as $index => $product)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $index + 1 }}</td>
 
                             <td>
                                 {{ $product->category->name ?? 'N/A' }}
@@ -55,6 +55,12 @@
 
                             <td>
                                 {{ $product->discount_percent ?? 0 }}%
+                            </td>
+
+                            <td>
+                                <span class="badge {{ $product->status ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $product->status ? 'Active' : 'Inactive' }}
+                                </span>
                             </td>
 
                             <td>
@@ -85,8 +91,7 @@
                 </tbody>
 
             </table>
-        </div>
-    </div>
+       
 
 </div>
 @endsection

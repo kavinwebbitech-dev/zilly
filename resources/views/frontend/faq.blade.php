@@ -40,12 +40,12 @@
                             </ul>
 
                             <div class="btn-group">
-                                <a href="contact-us.html" class="tf-btn animate-btn">
+                                <a href="{{ route('contact') }}" class="tf-btn animate-btn">
                                     Contact Us
                                 </a>
-                                <a href="#" class="tf-btn btn-white animate-btn animate-dark">
+                                {{-- <a href="#" class="tf-btn btn-white animate-btn animate-dark">
                                     Chat With Us
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -444,34 +444,5 @@
             </div>
         </div>
     </div>
-    <!-- /modal demo -->
-
-    <!-- Reset pass -->
-    <div class="offcanvas offcanvas-end popup-style-1 popup-reset-pass" id="resetPass">
-        <div class="canvas-wrapper">
-            <div class="canvas-header popup-header">
-                <span class="title">Reset Your Password</span>
-                <button class="icon-close icon-close-popup" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="canvas-body popup-inner">
-                <form action="#" class="form-login">
-                    <div class="">
-                        <p class="text text-sm text-main-2">Forgot your password? No worries! Enter your registered
-                            email to receive a link and securely reset it in just a few steps.</p>
-                        <fieldset class="email mb_12">
-                            <input type="email" placeholder="Enter Your Email*" required>
-                        </fieldset>
-                    </div>
-                    <div class="bot">
-                        <div class="button-wrap">
-                            <button class="subscribe-button tf-btn animate-btn bg-dark-2 w-100" type="submit">Reset
-                                Password</button>
-                            <button type="button" data-bs-dismiss="offcanvas"
-                                class="tf-btn btn-out-line-dark2 w-100">Cancel</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+  
 @endsection
