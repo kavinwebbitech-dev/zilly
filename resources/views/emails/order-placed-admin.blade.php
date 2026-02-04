@@ -37,7 +37,7 @@
 
                                 <tr>
                                     <td style="background:#f9f9f9;"><strong>Order ID</strong></td>
-                                    <td>{{ $order->id }}</td>
+                                    <td>{{ $order->order_id }}</td>
                                 </tr>
 
                                 <tr>
@@ -50,6 +50,23 @@
                                     <td>{{ $order->phone }}</td>
                                 </tr>
 
+                                <!-- ADDRESS -->
+                                <tr>
+                                    <td style="background:#f9f9f9;"><strong>Address</strong></td>
+                                    <td>
+                                        {{ $order->address }}, {{ $order->city }}, {{ $order->state }} - {{ $order->zipcode }}
+                                    </td>
+                                </tr>
+
+                                <!-- SUBTOTAL -->
+                                <tr>
+                                    <td style="background:#f9f9f9;"><strong>Subtotal</strong></td>
+                                    <td style="color:#333333; font-weight:bold;">
+                                        ₹{{ number_format($order->subtotal, 2) }}
+                                    </td>
+                                </tr>
+
+                                <!-- TOTAL AMOUNT -->
                                 <tr>
                                     <td style="background:#f9f9f9;"><strong>Total Amount</strong></td>
                                     <td style="color:#16a34a; font-weight:bold;">

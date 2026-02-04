@@ -35,10 +35,17 @@ class ProductController extends Controller
             'name'        => 'required|string|max:255',
             'price'       => 'required|numeric',
             'status'      => 'nullable|boolean',
+            'image_details.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'product_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $colorSize = $request->color_size;
+        $images = $product->image_details ?? [];
+
+        if ($request->hasFile('image_details')) {
+            foreach ($request->file('image_details') as $image) {
+                $images[] = $image->store('products_image_details', 'public');
+            }
+        }
 
         $product = Product::create([
             'category_id'       => $request->category_id,
@@ -48,6 +55,8 @@ class ProductController extends Controller
             'original_price'    => $request->original_price,
             'discount_percent'  => $request->discount_percent,
             'short_description' => $request->short_description,
+            'care_instructions' => $request->care_instructions,
+            'image_details'     => $images,
             'status'     => $request->has('status') ? 1 : 0,
             'today_pick' => $request->has('today_pick') ? 1 : 0,
         ]);
@@ -75,10 +84,17 @@ class ProductController extends Controller
             'name'        => 'required|string|max:255',
             'price'       => 'required|numeric',
             'status'      => 'nullable|boolean',
+            'image_details.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'product_images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $colorSize = $request->color_size;
+        $images = $product->image_details ?? [];
+
+        if ($request->hasFile('image_details')) {
+            foreach ($request->file('image_details') as $image) {
+                $images[] = $image->store('products_image_details', 'public');
+            }
+        }
 
         $product->update([
             'category_id'       => $request->category_id,
@@ -88,6 +104,8 @@ class ProductController extends Controller
             'original_price'    => $request->original_price,
             'discount_percent'  => $request->discount_percent,
             'short_description' => $request->short_description,
+            'care_instructions' => $request->care_instructions,
+            'image_details'     => $images,
             'status'     => $request->has('status') ? 1 : 0,
             'today_pick' => $request->has('today_pick') ? 1 : 0,
         ]);
@@ -128,6 +146,32 @@ class ProductController extends Controller
 
         // Only soft delete (no file removal)
         $image->delete();
+
+        return response()->json(['success' => true]);
+    }
+
+
+    public function deleteImageDetails(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+
+        $images = $product->image_details ?? [];
+
+        $index = (int) $request->index;
+
+        if (!isset($images[$index])) {
+            return response()->json(['success' => false]);
+        }
+
+        // Delete file
+        Storage::disk('public')->delete($images[$index]);
+
+        // Remove from array
+        unset($images[$index]);
+
+        // Re-index array
+        $product->image_details = array_values($images);
+        $product->save();
 
         return response()->json(['success' => true]);
     }

@@ -18,7 +18,7 @@
                                 <i class="icon icon-trash remove" data-id="{{ $item->id }}"></i>
                             </div>
 
-                            <p class="price-wrap text-sm fw-medium">
+                            <p class="price-wrap text-sm fw-medium mt-3">
                                 <span class="new-price text-primary">
                                     ₹{{ number_format($item->price, 2) }}
                                 </span>
@@ -66,19 +66,19 @@
 
             @if ($relatedProducts->isNotEmpty())
                 <div class="cart-related-header">
-                    <h2 class="text-xl">You may also like</h2>
+                    <h2 class="text-xl mx-2">You may also like</h2>
 
                     <div class="cart-related-nav">
-                        <div class="swiper-button-prev related-prev"></div>
-                        <div class="swiper-button-next related-next"></div>
+                        <div class="swiper-button-prev related-prev" style="color: #6b3f1d !important;"></div>
+                        <div class="swiper-button-next related-next" style="color: #6b3f1d !important;"></div>
                     </div>
                 </div>
 
                 <div class="swiper relatedSwiper cart-related-swiper">
                     <div class="swiper-wrapper">
                         @foreach ($relatedProducts as $product)
-                            <div class="swiper-slide p-4">
-                                <div class="tf-mini-cart-item line radius-16 py-3">
+                            <div class="swiper-slide p-3">
+                                <div class="tf-mini-cart-item line radius-16 p-2">
                                     <div class="tf-mini-cart-image">
                                         <img
                                             src="{{ $product->productImage?->image

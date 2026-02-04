@@ -11,9 +11,11 @@ class Product extends Model
         'brand_id',
         'name',
         'price',
+        'image_details',
         'original_price',
         'discount_percent',
         'short_description',
+        'care_instructions',
         'status',
         'today_pick',
         'colors',
@@ -22,9 +24,7 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'colors' => 'array',
-        'sizes' => 'array',
-        'color_size' => 'array',
+        'image_details' => 'array',
     ];
     public function category()
     {
@@ -42,11 +42,11 @@ class Product extends Model
     {
         return $this->hasOne(ProductImage::class)->oldestOfMany();
     }
-   public function order()
-{
-    return $this->hasOne(Order::class, 'product_id', 'id'); 
-    // hasOne(RelatedModel, foreign_key_on_related, local_key)
-}
-        // Or hasMany if a product can have multiple orders
-    
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'product_id', 'id');
+        // hasOne(RelatedModel, foreign_key_on_related, local_key)
+    }
+    // Or hasMany if a product can have multiple orders
+
 }

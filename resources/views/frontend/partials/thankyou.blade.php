@@ -96,7 +96,6 @@
 
 <div class="thank-you-container">
     <h1>🎉 Thank You!</h1>
-
     <p>
         Your order has been placed successfully.<br>
         <strong>Payment Method:</strong> Cash on Delivery

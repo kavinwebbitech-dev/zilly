@@ -140,6 +140,8 @@ Route::middleware(['auth', 'admin'])
         Route::delete('products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
         Route::post('products/images/{id}', [AdminProductController::class, 'deleteImage'])
             ->name('products.images.delete');
+        Route::post('products/image-details/delete',[AdminProductController::class, 'deleteImageDetails'])->name('products.image-details.delete');
+
         Route::resource('brands', BrandController::class);
         Route::resource('categories', CategoryController::class);
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

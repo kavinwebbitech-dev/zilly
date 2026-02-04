@@ -1,6 +1,21 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    <style>
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+            display: block;
+
+        }
+
+        .table-responsive table th,
+        .table-responsive table td {
+            white-space: nowrap;
+           
+        }
+    </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <div class="container-fluid">
@@ -35,160 +50,167 @@
             </script>
         @endif
 
-        <table class="table table-bordered table-striped align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>User</th>
-                    <th>Order Name</th>
-                    <th width="80">Payment</th>
-                    <th>Coupon</th>
-                    <th>Discount</th>
-                    <th>Subtotal</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                    @if ($showReturnRemark)
-                        <th>Return Remark</th>
-                    @endif
-                    <th>Items</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($orders as $index => $order)
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle">
+
+                <thead class="table-dark">
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $order->user->name ?? 'Guest' }}</td>
-                        <td>{{ $order->firstname }}</td>
-                        <td class="text-center">{{ strtoupper($order->payment_method) }}</td>
-                        <td>{{ $order->coupon ? $order->coupon->code : '-' }}</td>
-                        <td>₹{{ number_format($order->discount, 2) }}</td>
-                        <td>₹{{ number_format($order->subtotal, 2) }}</td>
-                        <td>₹{{ number_format($order->total, 2) }}</td>
-
-                        @php
-                            $statusClass = match ($order->status) {
-                                'pending' => 'bg-primary',
-                                'confirmed' => 'bg-info',
-                                'shipped' => 'bg-warning',
-                                'delivered' => 'bg-success',
-                                'returned' => 'bg-dark',
-                                'canceled' => 'bg-danger',
-                                default => 'bg-secondary',
-                            };
-                        @endphp
-                        <td><span class="badge {{ $statusClass }}">{{ ucfirst($order->status) }}</span></td>
-                        <td>{{ $order->created_at->format('d-m-Y H:i') }}</td>
-
+                        <th>ID</th>
+                        <th>Order Id</th>
+                        <th>User</th>
+                        <th>Order Name</th>
+                        <th>Address</th>
+                        <th width="80">Payment</th>
+                        <th>Coupon</th>
+                        <th>Discount</th>
+                        <th>Subtotal</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>order_Date</th>
                         @if ($showReturnRemark)
+                            <th>Return Remark</th>
+                        @endif
+                        <th>Items</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($orders as $index => $order)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $order->order_id }}</td>
+                            <td>{{ $order->user->name ?? 'Guest' }}</td>
+                            <td>{{ $order->firstname }}</td>
+                            <td>
+                                {{ $order->address }}, {{ $order->city }}, {{ $order->state }} - {{ $order->zipcode }}
+                                <br>
+                                <strong>Phone:</strong> {{ $order->phone }}
+                            </td>
+                            <td class="text-center">{{ strtoupper($order->payment_method) }}</td>
+                            <td>{{ $order->coupon ? $order->coupon->code : '-' }}</td>
+                            <td>₹{{ number_format($order->discount, 2) }}</td>
+                            <td>₹{{ number_format($order->subtotal, 2) }}</td>
+                            <td>₹{{ number_format($order->total, 2) }}</td>
+
+                            @php
+                                $statusClass = match ($order->status) {
+                                    'pending' => 'bg-primary',
+                                    'confirmed' => 'bg-info',
+                                    'shipped' => 'bg-warning',
+                                    'delivered' => 'bg-success',
+                                    'returned' => 'bg-dark',
+                                    'canceled' => 'bg-danger',
+                                    default => 'bg-secondary',
+                                };
+                            @endphp
+                            <td><span class="badge {{ $statusClass }}">{{ ucfirst($order->status) }}</span></td>
+                            <td>{{ $order->created_at->timezone('Asia/Kolkata')->format('d-m-Y H:i') }}</td>
+                            @if ($showReturnRemark)
+                                <td class="text-center">
+                                    @if ($order->return_remark)
+                                        <span class="text-danger fw-semibold" data-bs-toggle="tooltip"
+                                            title="{{ $order->return_remark }}">
+                                            {{ Str::limit($order->return_remark, 10) }}
+                                        </span>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            @endif
+
                             <td class="text-center">
-                                @if ($order->return_remark)
-                                    <span class="text-danger fw-semibold" data-bs-toggle="tooltip"
-                                        title="{{ $order->return_remark }}">
-                                        {{ Str::limit($order->return_remark, 10) }}
-                                    </span>
+                                <button type="button" class="btn btn-sm btn-outline-primary toggle-items"
+                                    data-order-id="{{ $order->id }}">View Items</button>
+                            </td>
+
+                            <td class="text-center">
+                                @switch($order->status)
+                                    @case('pending')
+                                        <a href="{{ route('admin.orders.status', [$order->id, 'confirmed']) }}"
+                                            class="text-info mx-1" title="Confirm"><i class="fa-solid fa-circle-check"></i></a>
+                                    @break
+
+                                    @case('confirmed')
+                                        <a href="{{ route('admin.orders.status', [$order->id, 'shipped']) }}"
+                                            class="text-warning mx-1" title="Shipped"><i class="fa-solid fa-truck"></i></a>
+                                    @break
+
+                                    @case('shipped')
+                                        <a href="{{ route('admin.orders.status', [$order->id, 'delivered']) }}"
+                                            class="text-success mx-1" title="Delivered"><i class="fa-solid fa-box-open"></i></a>
+                                    @break
+
+                                    @case('delivered')
+                                    @case('canceled')
+
+                                    @case('returned')
+                                        <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Delete this order?')">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @break
+                                @endswitch
+                            </td>
+                        </tr>
+
+                        {{-- ORDER ITEMS --}}
+                        <tr class="order-items-row d-none" id="items-{{ $order->id }}">
+                            <td colspan="{{ $colspan }}" class="bg-light p-3">
+                                <h6 class="fw-bold mb-3">Order Items</h6>
+                                @if ($order->orderItems->count())
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th>Product</th>
+                                                <th class="text-center">Qty</th>
+                                                <th class="text-end">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($order->orderItems as $item)
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <img src="{{ $item->productImage ? asset('storage/' . $item->productImage->image) : asset('asset/images/no-image.png') }}"
+                                                                width="40" height="40" class="border rounded">
+                                                            {{ $item->product->name ?? $item->name }}
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">{{ $item->quantity }}</td>
+                                                    <td class="text-end">₹{{ number_format($item->price, 2) }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 @else
-                                    -
+                                    <p class="text-muted mb-0">No items found.</p>
                                 @endif
                             </td>
-                        @endif
-
-                        <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-outline-primary toggle-items"
-                                data-order-id="{{ $order->id }}">View Items</button>
-                        </td>
-
-                        <td class="text-center">
-                            @switch($order->status)
-                                @case('pending')
-                                    <a href="{{ route('admin.orders.status', [$order->id, 'confirmed']) }}" class="text-info mx-1"
-                                        title="Confirm"><i class="fa-solid fa-circle-check"></i></a>
-                                @break
-
-                                @case('confirmed')
-                                    <a href="{{ route('admin.orders.status', [$order->id, 'shipped']) }}" class="text-warning mx-1"
-                                        title="Shipped"><i class="fa-solid fa-truck"></i></a>
-                                @break
-
-                                @case('shipped')
-                                    <a href="{{ route('admin.orders.status', [$order->id, 'delivered']) }}"
-                                        class="text-success mx-1" title="Delivered"><i class="fa-solid fa-box-open"></i></a>
-                                @break
-
-                                @case('delivered')
-                                @case('canceled')
-
-                                @case('returned')
-                                    <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Delete this order?')">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
-                                @break
-                            @endswitch
-                        </td>
-                    </tr>
-
-                    {{-- ORDER ITEMS --}}
-                    <tr class="order-items-row d-none" id="items-{{ $order->id }}">
-                        <td colspan="{{ $colspan }}" class="bg-light p-3">
-                            <h6 class="fw-bold mb-3">Order Items</h6>
-                            @if ($order->orderItems->count())
-                                <table class="table table-sm table-bordered mb-0">
-                                    <thead class="table-secondary">
-                                        <tr>
-                                            <th>Product</th>
-                                            <th class="text-center">Qty</th>
-                                            <th class="text-end">Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($order->orderItems as $item)
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <img src="{{ $item->productImage ? asset('storage/' . $item->productImage->image) : asset('asset/images/no-image.png') }}"
-                                                            width="40" height="40" class="border rounded">
-                                                        {{ $item->product->name ?? $item->name }}
-                                                    </div>
-                                                </td>
-                                                <td class="text-center">{{ $item->quantity }}</td>
-                                                <td class="text-end">₹{{ number_format($item->price, 2) }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @else
-                                <p class="text-muted mb-0">No items found.</p>
-                            @endif
-                        </td>
-                    </tr>
-
-                    @empty
-                        <tr>
-                            <td colspan="{{ $colspan }}" class="text-center">No orders found.</td>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
 
-            {{-- PAGINATION --}}
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <div>
-
-                </div>
-                <div>
-                    {{ $orders->links('pagination::bootstrap-5') }}
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="{{ $colspan }}" class="text-center">No orders found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+        </div>
+        {{-- PAGINATION --}}
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div>
 
-
-        @endsection
-
+            </div>
+            <div>
+                {{ $orders->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
         @push('scripts')
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -206,4 +228,6 @@
                 });
             </script>
         @endpush
-    </div>
+        </div>
+
+    @endsection

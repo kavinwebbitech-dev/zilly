@@ -41,6 +41,29 @@
         .image-box:hover .product-image {
             transform: scale(1.02);
         }
+
+        .image-box {
+            position: relative;
+            border: 1px solid #ddd;
+            padding: 6px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .image-delete-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
     </style>
     <div class="container-fluid">
 
@@ -106,8 +129,12 @@
                         value="{{ old('discount_percent', $product->discount_percent) }}">
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Short Description</label>
-                    <textarea name="short_description" class="form-control" rows="3">{{ old('short_description', $product->short_description) }}</textarea>
+                    <label class="form-label">Product Details</label>
+                    <textarea name="short_description" class="form-control" rows="5">{{ old('short_description', $product->short_description) }}</textarea>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Care Instructions</label>
+                    <textarea name="care_instructions" class="form-control" rows="5">{{ old('care_instructions', $product->care_instructions) }}</textarea>
                 </div>
 
                 <div class="d-flex gap-5 align-items-center">
@@ -128,9 +155,27 @@
 
                 </div>
 
-
-
             </div>
+
+            <div class="mb-3">
+                <label class="form-label">Product Image Angle Details</label>
+                <input type="file" name="image_details[]" class="form-control" multiple accept="image/*">
+            </div>
+
+            <div class="row">
+                @foreach ($product->image_details ?? [] as $key => $image)
+                    <div class="col-md-3 mb-3">
+                        <div class="image-box">
+                            <img src="{{ asset('storage/' . $image) }}" class="product-image">
+                            <button type="button" class="image-delete-btn btn btn-danger btn-sm delete-image-details"
+                                data-product-id="{{ $product->id }}" data-index="{{ $key }}">
+                                X
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
             <div class="row mt-3">
                 <div class="mb-3">
                     <label class="form-label">Add More Images</label>
@@ -187,6 +232,40 @@
             });
         </script>
     @endpush
+    <script>
+        document.addEventListener('click', function(e) {
+
+            if (e.target.classList.contains('delete-image-details')) {
+
+                if (!confirm('Delete this image?')) return;
+
+                const btn = e.target;
+                const productId = btn.dataset.productId;
+                const index = btn.dataset.index;
+
+                fetch("{{ route('admin.products.image-details.delete') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            index: index
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            btn.closest('.col-md-3').remove();
+                        } else {
+                            alert('Failed to delete image');
+                        }
+                    });
+            }
+
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

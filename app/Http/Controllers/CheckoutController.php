@@ -149,9 +149,6 @@ class CheckoutController extends Controller
 
         $data = $this->calculateTotals($userId);
 
-        // DB::transaction(function () use ($request, $userId, $cartItems, $data) {
-
-        // 🟢 Create order
         $order = Order::create([
             'user_id'        => $userId,
             'firstname'      => $request->firstname,
@@ -172,6 +169,10 @@ class CheckoutController extends Controller
             'status'         => 'pending',
         ]);
 
+        // 🔥 Generate Order ID
+        $order->order_id = 'ORD-' . date('Ymd') . '-' . str_pad($order->id, 5, '0', STR_PAD_LEFT);
+        $order->save();
+
         // 🟢 Save order items
         foreach ($cartItems as $item) {
 
@@ -189,12 +190,12 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // 🟢 Reduce coupon limit ONLY after order placed
+
         if (!empty($data['coupon'])) {
             $data['coupon']->decrement('user_limit');
         }
 
-        // 🟢 Clear cart & coupon
+
         Cart::where('user_id', $userId)->delete();
         session()->forget('coupon');
 
@@ -202,14 +203,14 @@ class CheckoutController extends Controller
 
         try {
             Mail::send('emails.order-placed-user', ['order' => $order], function ($message) use ($order) {
-                $message->from("kavinwebbitech@gmail.com")
+                $message->from("zaynimportique@gmail.com")
                     ->to($order->email)
                     ->subject('Your Order Has Been Placed');
             });
 
             Mail::send('emails.order-placed-admin', ['order' => $order], function ($message) {
-                $message->from("kavinwebbitech@gmail.com")
-                    ->to('anandhwebbitech@gmail.com')
+                $message->from("zaynimportique@gmail.com")
+                    ->to('zaynimportique@gmail.com')
                     ->subject('New Order Received');
             });
         } catch (\Exception $e) {

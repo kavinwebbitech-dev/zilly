@@ -182,10 +182,10 @@
                                     <a target="_blank"
                                         href="https://www.google.com/maps?q=ZAYN+Importique,+Nava+India,+Coimbatore">
                                         <strong>ZAYN Importique</strong><br>
-                                        No. 21, 3rd Floor,<br>
-                                        Mani High School Teachers Layout,<br>
-                                        SNR College Road, Nava India,<br>
-                                        Coimbatore – 641004
+                                        Door no 35/9,<br>  
+                                        Betaspace, Desabandhu street,<br>
+                                        Ramnagar, <br>
+                                        Coimbatore - 641009
                                     </a>
                                 </li>
 
@@ -200,7 +200,7 @@
                                     <span class="box-icon">
                                         <i class="icon icon-mail"></i>
                                     </span>
-                                    <a href="mailto:support@zillybags.com">support@zillybags.com</a>
+                                    <a href="mailto:support@zillybags.com">zaynimportique@gmail.com</a>
                                 </li>
 
                             </ul>

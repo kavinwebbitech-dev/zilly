@@ -65,8 +65,12 @@
                 </div>
 
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Short Description</label>
-                    <textarea name="short_description" class="form-control" rows="3">{{ old('short_description') }}</textarea>
+                    <label class="form-label">Product Detail</label>
+                    <textarea name="short_description" class="form-control" rows="5">{{ old('short_description') }}</textarea>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Care Instructions</label>
+                    <textarea name="care_instructions" class="form-control" rows="5">{{ old('care_instructions') }}</textarea>
                 </div>
 
                 <div class="d-flex gap-5 align-items-center">
@@ -86,9 +90,10 @@
                     </div>
 
                 </div>
-
-
-
+                <div class="col-md-12 mt-3">
+                    <label class="form-label">Product Image angle Details</label>
+                    <input type="file" name="image_details[]" class="form-control" multiple accept="image/*">
+                </div>  
                 <div class="col-md-12 mt-3">
                     <label class="form-label">Product Images</label>
                     <input type="file" name="product_images[]" class="form-control" multiple accept="image/*">

@@ -27,7 +27,7 @@
                 <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;">
                     <tr style="background:#eef2ff;">
                         <td><strong>Order ID</strong></td>
-                        <td>{{ $order->id }}</td>
+                        <td>{{ $order->order_id }}</td>
                     </tr>
                     <tr>
                         <td style="background:#fafafa;"><strong>Payment Method</strong></td>

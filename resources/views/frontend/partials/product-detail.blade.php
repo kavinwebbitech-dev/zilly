@@ -186,7 +186,124 @@
             border-color: #ddd;
             cursor: not-allowed;
         }
+
+        .w-50 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .toggle-header {
+            cursor: pointer;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-description {
+            width: 100%;
+        }
+
+        .toggle-icon {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .product-points {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .product-points li {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .point-icon {
+            font-size: 18px;
+            color: #7a4a1d;
+            margin-top: 2px;
+        }
+
+        .point-text {
+            flex: 1;
+        }
+
+        /* FULL WIDTH AREA */
+        .product-thumbs-wrapper {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        /* Swiper full width */
+        .tf-product-media-thumbs {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Wrapper behavior */
+        .tf-product-media-thumbs .swiper-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Thumb size */
+        .tf-product-media-thumbs .swiper-slide {
+            width: 62px !important;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        /* Thumb image */
+        .thumb-img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            border: 2px solid transparent;
+        }
+
+        /* Active thumb */
+        .tf-product-media-thumbs .swiper-slide.active .thumb-img {
+            border-color: #603917;
+        }
+
+        .fk-size-item {
+            min-width: 44px;
+            height: 44px;
+            border: 1.5px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        /* Hover */
+        .fk-size-item.available:hover {
+            border-color: #000;
+        }
+
+        /* Active / Selected */
+        .fk-size-item.active {
+            border-color: #603917;
+            background: #603917;
+            color: #fff;
+        }
+
+        /* Disabled */
+        .fk-size-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
     </style>
+
+
 
     <div id="wrapper">
 
@@ -214,18 +331,37 @@
                     <!-- LEFT: IMAGES -->
                     <div class="col-md-6">
                         <div class="tf-product-media-wrap">
+
+                            <!-- MAIN IMAGE -->
                             <div class="swiper tf-product-media-main" id="mainProductSwiper">
                                 <div class="swiper-wrapper">
-                                    @foreach ($product->images as $index => $image)
-                                        <div class="swiper-slide" data-index="{{ $index }}">
-                                            <img src="{{ asset('storage/' . $image->image) }}" class="img-fluid"
-                                                alt="{{ $product->name }}"style="border-radius: 12px;">
+                                    @foreach ($product->images as $i => $image)
+                                        <div class="swiper-slide">
+                                            <img id="mainProductImage" src="{{ asset('storage/' . $image->image) }}"
+                                                class="img-fluid" style="border-radius:12px;">
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
-                        </div>
 
+
+                            <!-- THUMBNAILS (image_details JSON) -->
+                            <div class="product-thumbs-wrapper">
+                                <div class="swiper tf-product-media-thumbs" id="thumbProductSwiper">
+                                    <div class="swiper-wrapper">
+                                        @if (!empty($product->image_details))
+                                            @foreach ($product->image_details as $image)
+                                                <div class="swiper-slide">
+                                                    <img src="{{ asset('storage/' . $image) }}">
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
 
                     <!-- RIGHT: INFO -->
@@ -237,7 +373,14 @@
 
                                 <!-- Heading: Brand + Title -->
                                 <div class="tf-product-heading">
-                                    <span class="brand-product">{{ $product->brand?->name ?? 'ZILLY' }}</span>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="brand-product">{{ $product->brand?->name ?? 'ZILLY' }}</span>
+                                        <ul class="tf-product-cate-sku text-md">
+                                            <li class="item-cate-sku"><span class="label">Categories:</span> <span
+                                                    class="value">{{ $product->category?->name ?? 'Women / Bags' }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                     <h5 class="product-name fw-medium">{{ $product->name }}</h5>
 
                                     <!-- Rating -->
@@ -305,17 +448,21 @@
                                 <!-- Variants: Colors -->
                                 <div class="fk-colors">
                                     <p class="label">Colors</p>
+
                                     <div class="fk-color-list">
                                         @foreach ($product->images as $index => $img)
-                                            <div class="fk-color-item" data-index="{{ $index }}"
+                                            <div class="fk-color-item" data-index-colorimg="{{ $index }}"
                                                 data-id="{{ $img->id }}">
                                                 <img src="{{ asset('storage/' . $img->image) }}">
                                             </div>
                                         @endforeach
                                     </div>
+
                                     <input type="hidden" id="selected_image_id"
-                                        value="{{ $product->images->first()->id }}">
+                                        value="{{ optional($product->images->first())->id }}">
                                 </div>
+
+
                                 <div class="fk-sizes">
                                     <p class="label">Size</p>
                                     <div class="fk-size-list d-flex gap-2">
@@ -369,8 +516,6 @@
                                         });
                                     </script>
 
-
-
                                 </div>
 
                                 <!-- Hidden inputs for selected options -->
@@ -379,20 +524,91 @@
                                     value="{{ $product->images->first()->id }}">
 
 
+                            </div>
 
+                        </div>
+
+                    </div>
+                    <div class="tf-product-description mt-4">
+
+                        <div class="d-flex">
+
+                            <!-- LEFT : Product Description -->
+                            <div class="w-50 px-3">
+
+                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                    onclick="toggleSection('descContent','descIcon')">
+                                    <h6 class="title-description fw-medium mb-0">
+                                        Product Description
+                                    </h6>
+                                    <span id="descIcon" class="toggle-icon">+</span>
+                                </div>
+
+                                <div id="descContent" class="product-description mt-3 d-none">
+                                    @php
+                                        $sentences = preg_split('/(?<=[.?!])\s+/', trim($product->short_description));
+                                    @endphp
+
+                                    <ul class="product-points">
+                                        @foreach ($sentences as $sentence)
+                                            @if (trim($sentence))
+                                                <li>
+                                                    <span class="point-icon">➤</span>
+                                                    <span class="point-text">{{ trim($sentence) }}</span>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+
+                                </div>
 
                             </div>
 
-                            <!-- SKU & Categories -->
-                            <ul class="tf-product-cate-sku text-md">
-                                <li class="item-cate-sku"><span class="label">Categories:</span> <span
-                                        class="value">{{ $product->category?->name ?? 'Women / Bags' }}</span></li>
-                            </ul>
+                            <!-- RIGHT : Care and Instructions -->
+                            <div class="w-50 px-3">
+
+                                <div class="d-flex justify-content-between align-items-center toggle-header"
+                                    onclick="toggleSection('careContent','careIcon')">
+                                    <h6 class="title-description fw-medium mb-0">
+                                        Care and Instructions
+                                    </h6>
+                                    <span id="careIcon" class="toggle-icon">+</span>
+                                </div>
+
+                                <div id="careContent" class="product-description mt-3 d-none">
+                                    @php
+                                        $sentences = preg_split('/(?<=[.?!])\s+/', trim($product->care_instructions));
+                                    @endphp
+
+                                    <ul class="product-points">
+                                        @foreach ($sentences as $sentence)
+                                            <li>
+                                                <span class="point-icon">➤</span>
+                                                <span class="point-text">{{ trim($sentence) }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+
+
+                                </div>
+
+                            </div>
 
                         </div>
-                    </div>
-                </div>
 
+                    </div>
+
+
+                    <script>
+                        function toggleSection(contentId, iconId) {
+                            const content = document.getElementById(contentId);
+                            const icon = document.getElementById(iconId);
+
+                            content.classList.toggle('d-none');
+                            icon.textContent = content.classList.contains('d-none') ? '+' : '−';
+                        }
+                    </script>
+                </div>
 
             </div>
     </div>
@@ -420,68 +636,109 @@
         });
     @endphp
 
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
-        // Initialize Swiper
         document.addEventListener('DOMContentLoaded', function() {
+
             const mainSwiper = new Swiper('#mainProductSwiper', {
                 slidesPerView: 1,
-                spaceBetween: 10,
-                loop: false,
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                loop: false
             });
 
-            const productDataJs = @json($productData);
+            const mainImage = document.getElementById('mainProductImage');
 
-            function handleColorClick(index, clickedEl) {
-                document.querySelectorAll('.fk-color-item').forEach(el => el.classList.remove('active'));
-                clickedEl.classList.add('active');
-                mainSwiper.slideTo(index);
 
-                // Update info
-                document.querySelector('.fk-title').textContent = productDataJs[index].name;
-                document.querySelector('.fk-price').textContent = '₹' + productDataJs[index].price;
-                const mrpEl = document.querySelector('.fk-mrp');
-                const discountEl = document.querySelector('.fk-discount');
+            const thumbSwiper = new Swiper('#thumbProductSwiper', {
+                slidesPerView: 'auto',
+                spaceBetween: 10,
+                centeredSlides: true, // ✅ center if few
+                centeredSlidesBounds: true, // ✅ prevent overflow gaps
+                watchOverflow: true, // ✅ auto disable if not enough
+                freeMode: true, // ✅ smooth scroll
+                slideToClickedSlide: true // ✅ auto scroll on click
+            });
 
-                if (productDataJs[index].original_price) {
-                    mrpEl.textContent = '₹' + productDataJs[index].original_price;
-                    const discount = Math.round(
-                        ((parseInt(productDataJs[index].original_price.replace(/,/g, '')) -
-                                parseInt(productDataJs[index].price.replace(/,/g, ''))) /
-                            parseInt(productDataJs[index].original_price.replace(/,/g, ''))) * 100
-                    );
-                    discountEl.textContent = discount + '% off';
-                    mrpEl.style.display = '';
-                    discountEl.style.display = '';
-                } else {
-                    mrpEl.style.display = 'none';
-                    discountEl.style.display = 'none';
-                }
+            /* ===============================
+               THUMB CLICK → MAIN IMAGE
+            =============================== */
+            document.querySelectorAll('#thumbProductSwiper .swiper-slide').forEach((slide, index) => {
+                slide.addEventListener('click', function() {
 
-                document.querySelector('.product-description').innerHTML = productDataJs[index].short_description;
+                    document.querySelectorAll('#thumbProductSwiper .swiper-slide')
+                        .forEach(s => s.classList.remove('active'));
 
-                const offersEl = document.querySelector('.fk-offers ul');
-                offersEl.innerHTML = '';
-                productDataJs[index].offers.forEach(offer => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<strong>${offer.title}</strong> ${offer.desc}`;
-                    offersEl.appendChild(li);
+                    slide.classList.add('active');
+
+                    // change only image
+                    mainImage.src = slide.querySelector('img').src;
+
+                    // auto center clicked thumb
+                    thumbSwiper.slideTo(index, 300);
                 });
-            }
+            });
 
+            /* ===============================
+               COLOR CLICK → MAIN IMAGE
+            =============================== */
             document.querySelectorAll('.fk-color-item').forEach(item => {
                 item.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    handleColorClick(index, this);
+
+                    const imgSrc = this.querySelector('img').src;
+
+                    document.querySelectorAll('.fk-color-item')
+                        .forEach(el => el.classList.remove('active'));
+
+                    this.classList.add('active');
+
+                    mainImage.src = imgSrc;
+                    document.getElementById('selected_image_id').value = this.dataset.id;
                 });
             });
 
-            // Select first color by default
-            if (document.querySelector('.fk-color-item')) {
-                handleColorClick(0, document.querySelector('.fk-color-item'));
-            }
+            // Default color
+            const firstColor = document.querySelector('.fk-color-item');
+            if (firstColor) firstColor.click();
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-        // Add to cart (AJAX)
+            const sizeItems = document.querySelectorAll('.fk-size-item.available');
+            const sizeInput = document.getElementById('selected_size');
+
+            // Highlight default size
+            const defaultSize = sizeInput.value;
+            sizeItems.forEach(item => {
+                if (item.dataset.size === defaultSize) {
+                    item.classList.add('active');
+                }
+            });
+
+            sizeItems.forEach(item => {
+                item.addEventListener('click', function() {
+
+                    // Remove active from all
+                    sizeItems.forEach(i => i.classList.remove('active'));
+
+                    // Add active to clicked
+                    this.classList.add('active');
+
+                    // Update hidden input
+                    sizeInput.value = this.dataset.size;
+
+                    console.log('Selected size:', sizeInput.value);
+                });
+            });
+
+        });
+    </script>
+ <script>
         // Add to cart (AJAX)
         // ============================
         // MINI CART AJAX FUNCTIONALITY
@@ -590,37 +847,6 @@
                 });
             });
 
-        });
-
-        document.querySelectorAll('.fk-color-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.fk-color-item').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-
-                let index = parseInt(this.dataset.index);
-                let imageId = this.dataset.id;
-
-                // save selected image id
-                document.getElementById('selected_image_id').value = imageId;
-
-                mainSwiper.slideTo(index);
-            });
-        });
-        $(document).ready(function() {
-            $('.fk-size-item.available').on('click', function() {
-                // Remove selected from others
-                $('.fk-size-item.available').removeClass('selected');
-                // Add selected to clicked
-                $(this).addClass('selected');
-
-                // Save selected size in hidden input
-                $('#selected_size').val($(this).data('size'));
-            });
-
-            // Optional: alert selected size on change
-            $('#selected_size').on('change', function() {
-                console.log('Selected size:', $(this).val());
-            });
         });
         $(document).ready(function() {
 

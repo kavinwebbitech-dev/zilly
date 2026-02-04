@@ -91,10 +91,29 @@
                                 Sign in
                             </button>
 
-                            <button type="button" data-bs-toggle="offcanvas" data-bs-target="#register"
-                                data-bs-dismiss="offcanvas" class="tf-btn btn-out-line-dark2 flex-grow-1">
+                            <button type="button" class="tf-btn btn-out-line-dark2 flex-grow-1" onclick="openRegister()">
                                 Create an account
                             </button>
+                            <script>
+                                function openRegister() {
+                                    const login = bootstrap.Offcanvas.getInstance(
+                                        document.getElementById('login')
+                                    );
+
+                                    if (login) {
+                                        login.hide();
+                                    }
+
+                                    setTimeout(() => {
+                                        const register = new bootstrap.Offcanvas(
+                                            document.getElementById('register')
+                                        );
+                                        register.show();
+                                    }, 300); // smooth transition
+                                }
+                            </script>
+
+
                         </div>
 
                         <!-- Google Login -->
@@ -110,5 +129,5 @@
         </div>
     </div>
 </div>
-<!-- /Login -->
-<!-- Reset Password Offcanvas -->
+<!-- /Login Offcanvas -->
+

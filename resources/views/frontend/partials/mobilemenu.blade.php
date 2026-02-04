@@ -22,12 +22,15 @@
                     <a href="contact-us.php" class="text-need">Need Help?</a>
                 </div>
                 <div class="mb-contact">
-                    <p>Address: Zilly Bags, Chennai, Tamil Nadu, India</p>
+                    <p>Address: Door no 35/9,
+                        Betaspace, Desabandhu street,
+                        Ramnagar,
+                        Coimbatore - 641009</p>
                 </div>
                 <ul class="mb-info">
                     <li>
                         Email:
-                        <b class="fw-medium">support@zillybags.com</b>
+                        <b class="fw-medium">zaynimportique@gmail.com</b>
                     </li>
                     <li>
                         Phone:
@@ -36,7 +39,7 @@
                 </ul>
             </div>
         </div>
-        
+
     </div>
 </div>
 <!-- /mobile menu -->

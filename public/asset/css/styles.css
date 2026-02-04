@@ -15838,7 +15838,7 @@ html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  /* gap: 8px; */
 }
 .tf-mini-cart-item .tf-mini-cart-info .info-variant {
   display: flex;

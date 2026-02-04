@@ -61,7 +61,7 @@
                             {{-- PARENT ROW --}}
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $order->id }}</td>
+                                <td>{{ $order->order_id }}</td>
                                 <td>{{ $order->created_at->format('d M, Y') }}</td>
 
                                 {{-- STATUS WITH COLOR --}}
@@ -81,7 +81,7 @@
                                     </span>
                                 </td>
 
-                                <td>${{ number_format($order->total, 2) }}</td>
+                                <td>₹ {{ number_format($order->total, 2) }}</td>
 
                                 <td class="text-center">
                                     <button class="btn btn-sm btn-primary toggle-items"

@@ -379,7 +379,7 @@
                                     <div class="cls-btn text-center">
                                         <a href="{{ route('product') }}"
                                             class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
-                                            Classic Handbags <i class="icon icon-arrow-top-left"></i>
+                                            EVERYDAY TOTE <i class="icon icon-arrow-top-left"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -396,7 +396,7 @@
                                     <div class="cls-btn text-center">
                                         <a href="{{ route('product') }}"
                                             class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
-                                            Modern Backpacks <i class="icon icon-arrow-top-left"></i>
+                                            GOLDEN SLING <i class="icon icon-arrow-top-left"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -413,7 +413,7 @@
                                     <div class="cls-btn text-center">
                                         <a href="{{ route('product') }}"
                                             class="tf-btn btn-cls btn-white hover-dark hover-icon-2">
-                                            Office Bags <i class="icon icon-arrow-top-left"></i>
+                                            EVERYDAY TOTE <i class="icon icon-arrow-top-left"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -519,11 +519,11 @@
                                                     alt="">
                                             </div>
                                             <div class="box-price">
-                                                <a href="{{ route('product-details') }}"
+                                                <a href="{{ route('product') }}"
                                                     class="link name-item text-md fw-medium">
                                                     Premium Office Laptop Bag
                                                 </a>
-                                                <p class="price text-md fw-medium">₹999</p>
+                                                <p class="price text-md fw-medium">₹1999</p>
                                             </div>
                                         </div>
                                     </div>
@@ -568,11 +568,11 @@
                                                     alt="">
                                             </div>
                                             <div class="box-price">
-                                                <a href="{{ route('product-details') }}"
+                                                <a href="{{ route('product') }}"
                                                     class="link name-item text-md fw-medium">
                                                     Classic Leather Handbag
                                                 </a>
-                                                <p class="price text-md fw-medium">₹1,799</p>
+                                                <p class="price text-md fw-medium">₹1,999</p>
                                             </div>
                                         </div>
                                     </div>
@@ -617,11 +617,11 @@
                                                     alt="">
                                             </div>
                                             <div class="box-price">
-                                                <a href="{{ route('product-details') }}"
+                                                <a href="{{ route('product') }}"
                                                     class="link name-item text-md fw-medium">
                                                     Urban Travel Backpack
                                                 </a>
-                                                <p class="price text-md fw-medium">₹2,199</p>
+                                                <p class="price text-md fw-medium">₹1,699</p>
                                             </div>
                                         </div>
                                     </div>
